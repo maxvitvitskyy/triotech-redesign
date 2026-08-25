@@ -897,7 +897,7 @@ input,textarea{font:inherit}
    меню, під ним текст, а картки розтягуються на весь залишок висоти. */
 .primary{
   display:flex;flex-direction:column;min-height:100svh;
-  padding:calc(var(--header-top) + var(--header-h) + clamp(40px,5vw,72px)) 0 clamp(28px,3vw,44px);
+  padding:calc(var(--header-top) + var(--header-h) + clamp(40px,5vw,72px)) 0 0;
 }
 /* Картки вирівняні по тій самій сітці, що й меню та решта секцій */
 .primary__swiper{width:min(100% - (var(--gutter) * 2),var(--maxw));margin-inline:auto;overflow:visible;flex:1 1 auto;min-height:0;display:grid;grid-template-rows:minmax(0,1fr)}
@@ -922,70 +922,114 @@ input,textarea{font:inherit}
   display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:minmax(0,1fr);
   gap:clamp(16px,1.7vw,24px);align-self:stretch;height:100%;width:100%;min-height:0;
 }
+/* Форма картки з ескіза: суцільна фігура, залита фотографією, у якої знизу
+   ліворуч вирізано місце під назву галузі, а знизу праворуч лишається виступ
+   зі стрілкою. Фігура зібрана з трьох шарів з тим самим фото: панель, виступ
+   і невелика «галтель», що округляє внутрішній кут стику. Оскільки в усіх
+   трьох шарах фото однакового розміру й позиції, стиків не видно. */
 .primary .primary__item{
-  position:relative;flex:none;width:auto;height:auto;
-  min-height:clamp(240px,30vh,520px);
-  border-radius:18px;overflow:hidden;isolation:isolate;
-  background:var(--steel-deep);cursor:pointer;
-  transition:transform .5s var(--ease-out),box-shadow .5s var(--ease-out);
+  --r:20px;                                  /* зовнішні кути */
+  --ri:clamp(15px,1.3vw,22px);               /* внутрішній кут стику */
+  --notch:clamp(74px,8.4vh,104px);           /* висота вирізу = висота виступу */
+  --tab:var(--notch);                        /* виступ майже квадратний */
+  --gap-in:clamp(9px,.8vw,13px);             /* поле навколо стрілки */
+  --dot:calc(var(--notch) - var(--gap-in) * 2);
+  position:relative;flex:none;width:auto;height:auto;min-height:0;
+  border-radius:0;overflow:visible;isolation:isolate;
+  background:none;cursor:pointer;
+  transition:transform .5s var(--ease-out),filter .5s var(--ease-out);
 }
 .primary__item + .primary__item{box-shadow:none}
-.primary__item:hover{transform:translateY(-6px);box-shadow:0 26px 52px -28px rgba(0,0,0,.95)}
-.primary__bg{position:absolute;inset:0;z-index:-2}
-.primary__bg img{
+.primary__item:hover{transform:translateY(-6px);filter:drop-shadow(0 22px 34px rgba(0,0,0,.6))}
+
+.primary__slab,.primary__bg{
+  position:absolute;inset:0;z-index:0;
+  overflow:hidden;background-color:var(--ink-raise);
+}
+/* панель: уся картка без нижньої смуги вирізу */
+.primary__bg{
+  -webkit-clip-path:inset(0 0 var(--notch) 0 round var(--r));
+  clip-path:inset(0 0 var(--notch) 0 round var(--r));
+}
+/* виступ: заходить під панель на радіус, щоб стик був суцільним */
+.primary__slab--tab{
+  -webkit-clip-path:inset(calc(100% - var(--notch) - var(--r)) 0 0 calc(100% - var(--tab))
+                  round 0 0 var(--r) var(--r));
+  clip-path:inset(calc(100% - var(--notch) - var(--r)) 0 0 calc(100% - var(--tab))
+                  round 0 0 var(--r) var(--r));
+}
+/* галтель: квадратик у куті стику, з якого кругом вирізано чверть кола */
+.primary__slab--joint{
+  -webkit-clip-path:inset(calc(100% - var(--notch)) var(--tab)
+                  calc(var(--notch) - var(--ri)) calc(100% - var(--tab) - var(--ri)));
+  clip-path:inset(calc(100% - var(--notch)) var(--tab)
+                  calc(var(--notch) - var(--ri)) calc(100% - var(--tab) - var(--ri)));
+  -webkit-mask-image:radial-gradient(circle var(--ri) at
+      calc(100% - var(--tab) - var(--ri)) calc(100% - var(--notch) + var(--ri)),
+      rgba(0,0,0,0) 0 98%,#000 100%);
+  mask-image:radial-gradient(circle var(--ri) at
+      calc(100% - var(--tab) - var(--ri)) calc(100% - var(--notch) + var(--ri)),
+      rgba(0,0,0,0) 0 98%,#000 100%);
+}
+.primary__slab picture,.primary__bg picture{display:block;width:100%;height:100%}
+.primary__slab img,.primary__bg img{
   width:100%;height:100%;object-fit:cover;
   transition:transform 1.05s var(--ease-out),filter .5s var(--ease);
   filter:saturate(.9) contrast(1.03);
 }
+.primary__item:hover .primary__slab img,
 .primary__item:hover .primary__bg img{transform:scale(1.05);filter:saturate(1) contrast(1.05)}
-.primary__item::before{
-  content:"";position:absolute;inset:0;z-index:-1;
-  background:linear-gradient(to top,rgba(8,11,15,.92) 0%,rgba(8,11,15,.34) 42%,rgba(8,11,15,.18) 100%);
-  transition:background .5s var(--ease);
+/* Одне спільне затемнення низу для всіх трьох шарів: вони однакового розміру,
+   тож градієнт лягає рівно й переходу між панеллю та виступом не видно. */
+.primary__slab::after,.primary__bg::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(to top,
+    rgba(6,9,13,.58) 0%,rgba(6,9,13,.16) 20%,rgba(6,9,13,0) 46%);
 }
-.primary__item:hover::before{
-  background:linear-gradient(to top,rgba(8,11,15,.92) 0%,rgba(8,11,15,.24) 44%,rgba(8,11,15,.12) 100%);
-}
+.primary__item::before{display:none}
 
 /* надпис «Мастильні матеріали» і нумерацію поки що прибрано */
 .primary__text,.primary__num{display:none}
 
-.primary__wrapper{display:flex;align-items:flex-end;width:100%;height:100%;padding:14px}
-/* плитка вздовж низу картки: назва ліворуч, стрілка праворуч */
+/* нижній ряд: назва у вирізі ліворуч, стрілка по центру виступу */
+.primary__wrapper{
+  position:absolute;z-index:2;left:0;right:0;bottom:0;height:var(--notch);
+  display:flex;align-items:center;padding:0;
+}
 .primary__wrapper .container{
   width:100%;max-width:none;margin:0;
-  display:flex;align-items:center;justify-content:space-between;gap:14px;
-  padding:16px 16px 16px 20px;
-  background:rgba(10,13,18,.62);
-  -webkit-backdrop-filter:blur(16px) saturate(1.3);backdrop-filter:blur(16px) saturate(1.3);
-  border:1px solid rgba(239,237,237,.14);
-  border-radius:14px;
-  transition:background-color .4s var(--ease),border-color .4s var(--ease);
-}
-.primary__item:hover .primary__wrapper .container{
-  background:rgba(14,17,22,.72);border-color:rgba(255,126,2,.34);
+  padding:0 calc(var(--tab) + clamp(10px,1vw,18px)) 0 2px;
+  display:flex;align-items:center;
+  background:none;border:none;border-radius:0;
+  -webkit-backdrop-filter:none;backdrop-filter:none;
 }
 .primary__title{
-  font-weight:700;font-size:clamp(15px,1.35vw,19px);line-height:1.12;
+  font-weight:700;font-size:clamp(19px,1.95vw,29px);line-height:1.1;
   letter-spacing:.005em;text-transform:uppercase;margin:0;
 }
-.primary__title span{display:block;font-weight:300;color:rgba(239,237,237,.66);font-size:.86em;margin-top:3px}
+.primary__title span{display:block;font-weight:300;color:rgba(239,237,237,.62);font-size:.82em;margin-top:2px}
 
 .primary__link{
-  flex:none;width:46px;height:46px;min-height:0;padding:0;
+  position:absolute;top:50%;right:var(--gap-in);
+  transform:translateY(-50%);
+  width:var(--dot);height:var(--dot);min-height:0;padding:0;
   display:inline-flex;align-items:center;justify-content:center;
   border-radius:50%;background-image:none;
-  background-color:rgba(239,237,237,.08);
-  border:1px solid rgba(239,237,237,.24);
+  background-color:rgba(8,11,15,.42);
+  border:1px solid rgba(239,237,237,.3);
   box-shadow:none;font-size:0;gap:0;
   transition:background-color .35s var(--ease),border-color .35s var(--ease),
-             transform .35s var(--ease);
+             transform .35s var(--ease),box-shadow .35s var(--ease);
 }
-.primary__icon{width:19px;height:16px;font-size:initial;transition:transform .35s var(--ease)}
+.primary__icon{
+  width:clamp(22px,1.7vw,30px);height:auto;
+  font-size:initial;transition:transform .35s var(--ease);
+}
 .primary__item:hover .primary__link{
   background-image:var(--flame-grad);background-clip:padding-box;
-  border-color:transparent;transform:scale(1.06);
-  box-shadow:0 10px 24px -12px rgba(255,94,1,.8);
+  background-color:transparent;border-color:transparent;
+  transform:translateY(-50%) scale(1.05);
+  box-shadow:0 12px 28px -12px rgba(255,94,1,.85);
 }
 .primary__item:hover .primary__icon{transform:translateX(3px)}
 
@@ -1665,10 +1709,15 @@ input,textarea{font:inherit}
 
   .primary__swiper{flex:none;display:block;grid-template-rows:none}
   .primary .primary__list{grid-template-columns:1fr;grid-template-rows:none;gap:12px;height:auto}
+  /* на вузьких екранах вирізу немає — звичайна горизонтальна картка */
+  .primary__slab{display:none}
+  .primary__bg{-webkit-clip-path:none;clip-path:none}
   .primary .primary__item{
+    --notch:0px;
     aspect-ratio:auto;min-height:0;height:clamp(122px,32vw,150px);
-    border-radius:var(--r-card);
+    border-radius:var(--r-card);overflow:hidden;
   }
+  .primary__item:hover{filter:none}
   /* Заливка кожної картки взята з домінантного відтінку її фотографії:
      оливкова техніка → оливкова картка, нафтова вишка → тепла, шестерні —
      золотаво-коричнева. Фото зсунуте праворуч і менше обрізається. */
@@ -1676,7 +1725,11 @@ input,textarea{font:inherit}
   .primary .primary__item:nth-child(2){--card:46,29,20}
   .primary .primary__item:nth-child(3){--card:42,35,20}
   .primary .primary__item{background:rgb(var(--card,9 12 16))}
-  .primary__bg{left:auto;right:0;width:64%}
+  .primary__bg{
+    z-index:0;inset:0 0 0 auto;width:64%;
+    background-color:transparent;border-radius:0;overflow:hidden;
+  }
+  .primary__bg::after{display:none}
   .primary__bg picture{display:block;width:100%;height:100%}
   .primary__bg img{
     object-position:center;filter:saturate(.98) brightness(.98);
@@ -1684,6 +1737,7 @@ input,textarea{font:inherit}
     mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.4) 26%,#000 66%);
   }
   .primary__item::before{
+    display:block;z-index:1;
     background:linear-gradient(90deg,
       rgb(var(--card)) 0%,rgba(var(--card),.94) 32%,
       rgba(var(--card),.52) 62%,rgba(var(--card),.14) 100%);
@@ -1694,22 +1748,26 @@ input,textarea{font:inherit}
       rgba(var(--card),.5) 64%,rgba(var(--card),.14) 100%);
   }
   /* на вузькому екрані плитка не потрібна — назва лягає просто на картку */
-  .primary__wrapper{padding:0;align-items:center}
+  .primary__wrapper{position:absolute;inset:0;height:auto;z-index:2;padding:0;align-items:center}
   .primary__wrapper .container{
     background:none;border:none;-webkit-backdrop-filter:none;backdrop-filter:none;
-    border-radius:0;padding:0 18px;
+    border-radius:0;padding:0 18px;justify-content:space-between;
   }
+  .primary__title{font-weight:700}
   .primary__item:hover .primary__wrapper .container{background:none;border-color:transparent}
   .primary__title{font-size:clamp(16px,4.6vw,20px)}
   /* На вузькому екрані стрілка лежить просто на фото — щоб вона не зникала
      на світлих кадрах, під нею темний скляний кружок */
+  .primary__icon{width:19px;height:16px}
   .primary__link{
+    position:static;transform:none;right:auto;top:auto;
     width:44px;height:44px;
     background-color:rgba(10,13,18,.52);border-color:rgba(239,237,237,.34);
     -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
     color:var(--paper);
   }
-  .primary__item:active .primary__link{background-image:var(--flame-grad);border-color:transparent}
+  .primary__item:hover .primary__link{transform:none}
+  .primary__item:active .primary__link{background-image:var(--flame-grad);border-color:transparent;transform:none}
   .primary__item:hover{transform:none;box-shadow:none}
 }
 

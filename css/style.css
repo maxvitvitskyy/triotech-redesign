@@ -584,11 +584,14 @@ input,textarea{font:inherit}
 /* головна (заповнена) */
 .start__btn--defolt,.form__btn,.header__cta,.products__btn,.quotes__btn{
   background-image:var(--flame-grad);color:#fff;
-  box-shadow:0 10px 26px -12px rgba(255,94,1,.85);
+  /* рамка прозора, а типове background-clip:border-box малює градієнт і під
+     нею — на краю з'являлась помаранчева смужка завтовшки в піксель */
+  background-clip:padding-box;
+  box-shadow:0 8px 20px -14px rgba(255,94,1,.7);
 }
 .start__btn--defolt:hover,.form__btn:hover,.header__cta:hover,.products__btn:hover,.quotes__btn:hover{
   transform:translateY(-2px);
-  box-shadow:0 16px 34px -12px rgba(255,94,1,.95);
+  box-shadow:0 14px 28px -14px rgba(255,94,1,.8);
 }
 .start__btn--defolt:hover svg,.form__btn:hover svg,.products__btn:hover svg,
 .quotes__btn:hover svg{transform:translateX(4px)}
@@ -652,16 +655,21 @@ input,textarea{font:inherit}
 .header__link--active::after{right:0}
 
 /* телефон — тихий, помаранчевий лише гліф */
+/* У панелі лишилась одна дія — подзвонити. Окрему кнопку «Залишити заявку»
+   прибрано: дві дії поспіль виштовхували телефон за межі панелі, а заявку
+   можна лишити з геро, з блоку товарів, зі смуги заклику та з форми. */
 .header__tel{
   display:inline-flex;align-items:center;gap:9px;flex:none;
-  padding:9px 16px;border-radius:var(--r-btn);
-  border:1px solid var(--line-strong);
-  font-size:14px;font-weight:500;letter-spacing:.01em;color:var(--paper);
+  min-height:44px;padding:0 18px;border-radius:var(--r-btn);
+  border:1px solid transparent;
+  background-image:var(--flame-grad);background-clip:padding-box;
+  box-shadow:0 8px 20px -14px rgba(255,94,1,.7);
+  font-size:14.5px;font-weight:500;letter-spacing:.01em;color:#fff;
   white-space:nowrap;
-  transition:border-color .22s var(--ease),background-color .22s var(--ease);
+  transition:transform .22s var(--ease),box-shadow .22s var(--ease);
 }
-.header__tel svg{width:16px;height:16px;color:var(--flame-hi);flex:none}
-.header__tel:hover{border-color:var(--flame-hi);background:rgba(255,126,2,.08)}
+.header__tel svg{width:16px;height:16px;color:#fff;flex:none}
+.header__tel:hover{transform:translateY(-2px);box-shadow:0 14px 28px -14px rgba(255,94,1,.85)}
 .header__tel--mobile{display:none}
 
 /* перемикач мов: текст замість прапорів */
@@ -769,6 +777,19 @@ input,textarea{font:inherit}
 /* ============================================================================
    ГОЛОВНА — три повноекранні панелі
    ============================================================================ */
+/* Стартовий екран: шапка не потрібна плашкою — лише логотип і перемикач мов
+   поверх фотографій. Повне меню з'являється вже на сторінці галузі. */
+.header__primary{top:0}
+.header__primary::before{
+  content:"";position:absolute;left:0;right:0;top:0;height:150px;z-index:-1;
+  background:linear-gradient(to bottom,rgba(10,14,18,.66),rgba(10,14,18,0));
+  pointer-events:none;
+}
+.header__primary .container{
+  background:none;border:none;box-shadow:none;border-radius:0;
+  -webkit-backdrop-filter:none;backdrop-filter:none;
+  padding-inline:0;min-height:auto;padding-top:24px;align-items:flex-start;
+}
 .header__primary .lang__list{border-color:rgba(239,237,237,.34)}
 .header__primary .lang__link{color:rgba(239,237,237,.82)}
 .header__primary .lang__link--on{color:#fff}
@@ -807,12 +828,12 @@ input,textarea{font:inherit}
 .primary__link{
   display:inline-flex;align-items:center;gap:12px;
   min-height:52px;padding:0 28px;border-radius:var(--r-btn);
-  background-image:var(--flame-grad);color:#fff;
+  background-image:var(--flame-grad);background-clip:padding-box;color:#fff;
   font-size:15px;font-weight:500;
-  box-shadow:0 10px 26px -12px rgba(255,94,1,.85);
+  box-shadow:0 8px 20px -14px rgba(255,94,1,.7);
   transition:transform .25s var(--ease),box-shadow .25s var(--ease);
 }
-.primary__link:hover{transform:translateY(-2px);box-shadow:0 16px 34px -12px rgba(255,94,1,.95)}
+.primary__link:hover{transform:translateY(-2px);box-shadow:0 14px 28px -14px rgba(255,94,1,.8)}
 .primary__icon{width:18px;height:16px;transition:transform .25s var(--ease)}
 .primary__link:hover .primary__icon{transform:translateX(4px)}
 
@@ -1130,12 +1151,12 @@ input,textarea{font:inherit}
 .footer__input:focus{outline:none;border-color:var(--flame-hi)}
 .footer__send{
   width:46px;height:46px;flex:none;border-radius:var(--r-btn);
-  background-image:var(--flame-grad);
+  background-image:var(--flame-grad);background-clip:padding-box;
   display:grid;place-items:center;
   transition:transform .22s var(--ease),box-shadow .22s var(--ease);
 }
 .footer__send svg{width:18px;height:16px;color:#fff}
-.footer__send:hover{transform:translateY(-2px);box-shadow:0 10px 22px -10px rgba(255,94,1,.9)}
+.footer__send:hover{transform:translateY(-2px);box-shadow:0 10px 22px -14px rgba(255,94,1,.75)}
 .social__list--footer{margin-top:26px;gap:8px}
 .social__list--footer .social__link{width:38px;height:38px}
 .social__list--footer .social__link svg{width:15px;height:15px}
@@ -1211,8 +1232,24 @@ input,textarea{font:inherit}
 /* ============================================================================
    АДАПТИВ
    ============================================================================ */
+/* Проміжний крок: на середніх екранах панель ущільнюється, щоб телефон
+   гарантовано вміщався в її ширину. */
+@media (max-width:1180px){
+  .header .container{gap:14px}
+  .header__content{gap:16px}
+  .header__list{gap:16px}
+  .header__link{font-size:12px;letter-spacing:.07em}
+  .header__tel{padding:0 14px;font-size:13.5px}
+  .lang__link{min-width:36px;height:32px;font-size:11.5px}
+}
+@media (max-width:980px){
+  .header__tel-num{display:none}          /* у панелі лишається іконка-трубка */
+  .header__tel{padding:0 14px}
+}
+/* але в мобільному меню місця вдосталь — номер показуємо повністю */
+.header__tel--mobile .header__tel-num{display:inline}
+
 @media (max-width:1200px){
-  .header__cta{display:none}
   .why__list{grid-template-columns:repeat(2,1fr)}
   /* нижче 1200 swiper не ініціалізується — панелі стають стосом */
   .primary__list{flex-direction:column;min-height:0}

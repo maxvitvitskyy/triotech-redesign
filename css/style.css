@@ -574,6 +574,9 @@ input,textarea{font:inherit}
   width:18px;height:18px;flex:none;transition:transform .25s var(--ease)
 }
 .btn__arrow{width:20px!important;height:16px!important}   /* viewBox 20×16 — не спотворюємо */
+/* Стрілки намальовані лише обведенням. Типова заливка у SVG — чорна, тож без
+   fill:none під стрілкою з'являється чорна пляма. */
+.btn__arrow,.start__icon,.product__icon,.form__icon,.product__arrow svg{fill:none}
 
 /* головна (заповнена) */
 .start__btn--defolt,.form__btn,.header__cta,.products__btn,.quotes__btn{

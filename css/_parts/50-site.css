@@ -461,6 +461,8 @@ input,textarea{font:inherit}
 }
 .header--open::after{opacity:1;visibility:visible}
 
+.header-fade{display:none}
+
 .header__primary .hamburger{display:flex}
 .header__primary .lang__button{margin-left:auto}
 .header__primary .header__content{
@@ -1102,16 +1104,33 @@ input,textarea{font:inherit}
   .hamburger{display:flex}
   /* Смуга легкого розмиття під панеллю: контент, що прокручується під нею,
      стає м'якшим, і меню читається на будь-якому тлі. */
-  /* Смуга заходить далеко за верхній край екрана: у Safari панель браузера
-     ховається при прокрутці, і смуга, що починалася рівно з нуля, лишала
-     вгорі різку смужку зображення. */
-  .header::before{
-    content:"";position:fixed;top:-160px;left:0;right:0;
-    height:calc(var(--header-top) + var(--header-h) + 178px);
-    z-index:-1;pointer-events:none;
+  /* Розмиття під панеллю зроблено кількома смугами, у яких сила розмиття
+     спадає крок за кроком. Маску тут використати не можна: WebKit (Safari,
+     а отже й браузер у Telegram) обрізає розмиття по масці непередбачувано —
+     саме через це смуга обривалась, і вище неї зображення лишалось чітким.
+     Перша смуга навмисно заходить далеко за верхній край, бо в Safari
+     висота видимої області змінюється, коли ховається панель браузера. */
+  .header-fade{display:block;position:fixed;inset:0;z-index:-1;pointer-events:none}
+  .header-fade span{position:fixed;left:0;right:0;display:block;pointer-events:none}
+  .header-fade span:nth-child(1){
+    top:-320px;height:calc(var(--header-top) + var(--header-h) + 320px);
+    -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  }
+  .header-fade span:nth-child(2){
+    top:calc(var(--header-top) + var(--header-h));height:12px;
     -webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px);
-    -webkit-mask-image:linear-gradient(180deg,#000 0,#000 calc(100% - 34px),transparent 100%);
-    mask-image:linear-gradient(180deg,#000 0,#000 calc(100% - 34px),transparent 100%);
+  }
+  .header-fade span:nth-child(3){
+    top:calc(var(--header-top) + var(--header-h) + 12px);height:12px;
+    -webkit-backdrop-filter:blur(5.5px);backdrop-filter:blur(5.5px);
+  }
+  .header-fade span:nth-child(4){
+    top:calc(var(--header-top) + var(--header-h) + 24px);height:12px;
+    -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
+  }
+  .header-fade span:nth-child(5){
+    top:calc(var(--header-top) + var(--header-h) + 36px);height:12px;
+    -webkit-backdrop-filter:blur(1.4px);backdrop-filter:blur(1.4px);
   }
   .header__tel{display:none}
   .header__content .header__tel--mobile{display:inline-flex;order:4;width:100%;justify-content:center}

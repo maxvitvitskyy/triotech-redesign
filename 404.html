@@ -51,9 +51,21 @@
     <h1>Сторінку не знайдено<span>Page not found</span></h1>
     <p>Такої адреси на сайті немає. Оберіть галузь на головній сторінці.</p>
     <div class="row">
-      <a class="primary" href="/">На головну</a>
-      <a href="/Home/en/index.html">English</a>
+      <a class="primary" href="/" data-home="">На головну</a>
+      <a href="/Home/en/index.html" data-home="Home/en/index.html">English</a>
     </div>
   </main>
+  <script>
+    /* На github.io сайт лежить у підпапці з назвою репозиторію, на власному
+       домені — у корені. Визначаємо базу й підставляємо її у посилання. */
+    (function () {
+      var seg = location.pathname.split('/').filter(Boolean);
+      var base = location.hostname.slice(-10) === '.github.io' && seg.length
+        ? '/' + seg[0] + '/' : '/';
+      Array.prototype.forEach.call(document.querySelectorAll('[data-home]'), function (a) {
+        a.setAttribute('href', base + a.getAttribute('data-home'));
+      });
+    })();
+  </script>
 </body>
 </html>

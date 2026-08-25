@@ -390,8 +390,9 @@ input,textarea{font:inherit}
 .is-active .triad-nav__link{
   background:linear-gradient(150deg,rgba(255,126,2,.52),rgba(255,46,0,.34));
   color:#fff;
-  filter:drop-shadow(0 0 18px rgba(255,110,20,.38))
-         drop-shadow(0 12px 28px rgba(255,80,0,.30));
+  filter:drop-shadow(0 0 10px rgba(255,138,40,.55))
+         drop-shadow(0 0 26px rgba(255,100,10,.42))
+         drop-shadow(0 12px 28px rgba(255,80,0,.28));
 }
 .is-active .triad-nav__link:hover,.is-active .triad-nav__link:focus-visible{
   background:linear-gradient(150deg,rgba(255,126,2,.54),rgba(255,46,0,.38));
@@ -1022,7 +1023,20 @@ input,textarea{font:inherit}
 
 @media (max-width:860px){
   :root{--header-h:68px}
+  /* у шухляді меню поза потоком, тож у панелі лишаються логотип і бургер —
+     розводимо їх по краях */
+  .header .container{justify-content:space-between}
   .hamburger{display:flex}
+  /* Смуга легкого розмиття під панеллю: контент, що прокручується під нею,
+     стає м'якшим, і меню читається на будь-якому тлі. */
+  .header::before{
+    content:"";position:fixed;top:0;left:0;right:0;
+    height:calc(var(--header-top) + var(--header-h) + 16px);
+    z-index:-1;pointer-events:none;
+    -webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px);
+    -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 62%,transparent 100%);
+    mask-image:linear-gradient(180deg,#000 0%,#000 62%,transparent 100%);
+  }
   .header__tel{display:none}
   .header__content .header__tel--mobile{display:inline-flex;order:4;width:100%;justify-content:center}
   /* Меню — окрема плаваюча картка рівно під панеллю, у її ширину.
@@ -1049,7 +1063,7 @@ input,textarea{font:inherit}
   .header__link{display:block;padding:16px 0;font-size:15px;letter-spacing:.08em}
   .header__link::after{display:none}
   .header__link--active{color:var(--flame-hi)}
-  .header__content .lang__button{order:2;margin-top:26px;align-self:flex-start}
+  .header__content .lang__button{order:2;margin-top:26px;align-self:flex-end}
   .header__content .header__cta{order:3;display:inline-flex;width:100%;margin-top:12px}
   .header__content .header__tel--mobile{margin-top:10px}
   .partner__list{grid-template-columns:repeat(2,1fr)}

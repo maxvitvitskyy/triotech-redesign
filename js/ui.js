@@ -37,14 +37,23 @@
       return;
     }
 
+    /* Поява трохи раніше, ніж блок повністю зайде в екран — так рух
+       відчувається природним, а не «наздоганяє» прокрутку. */
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) return;
         entry.target.classList.add("is-in");
         io.unobserve(entry.target);
       });
-    }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+    }, { threshold: 0, rootMargin: "0px 0px -12% 0px" });
 
-    targets.forEach(function (el) { io.observe(el); });
+    targets.forEach(function (el) {
+      var r = el.getBoundingClientRect();
+      if (r.top < window.innerHeight * 0.9) {   // вже у полі зору при відкритті
+        el.classList.add("is-in");
+        return;
+      }
+      io.observe(el);
+    });
   });
 })();

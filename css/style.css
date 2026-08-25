@@ -800,10 +800,16 @@ input,textarea{font:inherit}
 }
 .triad-nav__glass{
   position:absolute;inset:0;display:block;
-  background:rgba(239,237,237,.10);
-  -webkit-backdrop-filter:blur(20px) saturate(1.35);
-  backdrop-filter:blur(20px) saturate(1.35);
-  transition:background-color .35s var(--ease);
+  /* Градієнт навмисно робить «матовість» сам по собі: у Safari
+     backdrop-filter поруч із clip-path інколи не спрацьовує, і без цього
+     градієнта грань виглядала б просто плоскою плівкою. */
+  background:linear-gradient(150deg,
+    rgba(255,255,255,.20) 0%,
+    rgba(255,255,255,.06) 46%,
+    rgba(255,255,255,.13) 100%);
+  -webkit-backdrop-filter:blur(22px) saturate(1.4);
+  backdrop-filter:blur(22px) saturate(1.4);
+  transition:background .35s var(--ease);
 }
 /* Форми з ледь скругленими кутами й майже без проміжку між гранями.
    Через SVG-контур, бо clip-path:polygon() кутів не скруглює. */
@@ -851,13 +857,13 @@ input,textarea{font:inherit}
   opacity:0;transition:opacity .4s var(--ease);
 }
 .triad-nav__glow path{
-  fill:rgba(255,110,20,.34);
-  stroke:#FF9A45;stroke-width:2.4;
+  fill:rgba(255,110,20,.16);
+  stroke:#FF9A45;stroke-width:1.5;
   filter:url(#triGlow);
 }
-.is-active .triad-nav__glow{opacity:1}
+.is-active .triad-nav__glow{opacity:.78}
 .triad-nav__link:hover ~ .triad-nav__glow,
-.triad-nav__link:focus-visible ~ .triad-nav__glow{opacity:.72}
+.triad-nav__link:focus-visible ~ .triad-nav__glow{opacity:.5}
 
 /* наведення: скло легко «загорається», без суцільної заливки */
 .triad-nav__link:hover,.triad-nav__link:focus-visible{color:#fff;outline:none}
@@ -867,10 +873,12 @@ input,textarea{font:inherit}
 /* активна грань — помаранчеве матове скло: крізь нього видно фотографію */
 .is-active .triad-nav__link{color:#fff}
 .is-active .triad-nav__glass{
-  background:linear-gradient(150deg,rgba(255,126,2,.42),rgba(255,46,0,.26));
+  background:linear-gradient(150deg,
+    rgba(255,158,60,.50) 0%,rgba(255,70,4,.26) 52%,rgba(255,120,20,.38) 100%);
 }
 .is-active .triad-nav__link:hover .triad-nav__glass{
-  background:linear-gradient(150deg,rgba(255,126,2,.40),rgba(255,46,0,.24));
+  background:linear-gradient(150deg,
+    rgba(255,170,80,.58) 0%,rgba(255,80,8,.32) 52%,rgba(255,130,30,.44) 100%);
 }
 
 /* ============================================================================
@@ -1547,13 +1555,16 @@ input,textarea{font:inherit}
   .hamburger{display:flex}
   /* Смуга легкого розмиття під панеллю: контент, що прокручується під нею,
      стає м'якшим, і меню читається на будь-якому тлі. */
+  /* Смуга заходить далеко за верхній край екрана: у Safari панель браузера
+     ховається при прокрутці, і смуга, що починалася рівно з нуля, лишала
+     вгорі різку смужку зображення. */
   .header::before{
-    content:"";position:fixed;top:0;left:0;right:0;
-    height:calc(var(--header-top) + var(--header-h) + 16px);
+    content:"";position:fixed;top:-160px;left:0;right:0;
+    height:calc(var(--header-top) + var(--header-h) + 178px);
     z-index:-1;pointer-events:none;
     -webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px);
-    -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 62%,transparent 100%);
-    mask-image:linear-gradient(180deg,#000 0%,#000 62%,transparent 100%);
+    -webkit-mask-image:linear-gradient(180deg,#000 0,#000 calc(100% - 34px),transparent 100%);
+    mask-image:linear-gradient(180deg,#000 0,#000 calc(100% - 34px),transparent 100%);
   }
   .header__tel{display:none}
   .header__content .header__tel--mobile{display:inline-flex;order:4;width:100%;justify-content:center}

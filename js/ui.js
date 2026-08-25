@@ -71,6 +71,50 @@
       setTimeout(place, 300);   // після того, як шрифти змінять розкладку
     })();
 
+    /* --- знак-трикутник на головній ---
+       Жодна грань не активна за замовчуванням. Наводиш на грань або на
+       відповідну картку внизу — саме її сектор і засвічується. Класи ті
+       самі, що й на сторінках галузей, тож стилі спільні. */
+    (function () {
+      var triad = document.querySelector(".primary__triad");
+      if (!triad) return;
+
+      var edges = triad.querySelectorAll(".triad-edge");
+      var faces = {};
+      Array.prototype.forEach.call(triad.querySelectorAll(".triad-nav__item"), function (item, i) {
+        var key = (/triad-nav__item--([a-z]+)/.exec(item.className) || [])[1];
+        if (key) faces[key] = { item: item, edge: edges[i] };
+      });
+
+      function keyOf(href) {
+        var m = /(Military|OilGas|Industrial)/i.exec(href || "");
+        return m ? m[1].toLowerCase() : null;
+      }
+
+      function light(key, on) {
+        var f = faces[key];
+        if (!f) return;
+        f.item.classList.toggle("is-active", on);
+        if (f.edge) f.edge.classList.toggle("is-lit", on);
+      }
+
+      function bind(el, key) {
+        if (!key || !faces[key]) return;
+        el.addEventListener("mouseenter", function () { light(key, true); });
+        el.addEventListener("mouseleave", function () { light(key, false); });
+        el.addEventListener("focusin", function () { light(key, true); });
+        el.addEventListener("focusout", function () { light(key, false); });
+      }
+
+      Object.keys(faces).forEach(function (key) {
+        bind(faces[key].item, key);
+      });
+      Array.prototype.forEach.call(document.querySelectorAll(".primary__item"), function (card) {
+        var link = card.querySelector(".primary__cover") || card.querySelector(".primary__link");
+        bind(card, keyOf(link && link.getAttribute("href")));
+      });
+    })();
+
     /* --- поява блоків при прокрутці --- */
     var targets = document.querySelectorAll(".reveal, .reveal-stagger");
     if (!targets.length) return;

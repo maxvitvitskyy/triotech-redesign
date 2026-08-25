@@ -1,0 +1,831 @@
+/* ============================================================================
+   TRIOTECH — редизайн 2026
+   Палітра та шрифти — оригінальні брендові. Переписано: сітка, типографіка,
+   кнопки, іконки, навігація, картки, форми.
+   ============================================================================ */
+
+:root{
+  /* — брендовий вогонь (з оригіналу, без змін) — */
+  --flame-hi:#FF7E02;
+  --flame-lo:#FF2E00;
+  --flame:#FF5B01;
+  --flame-grad:linear-gradient(92deg,#FF7E02 0%,#FF2E00 100%);
+
+  /* — темні поверхні: систематизовано з #1B2938 / #182431 оригіналу — */
+  --ink:#0F141A;
+  --ink-raise:#151D26;
+  --steel:#1B2938;
+  --steel-deep:#182431;
+
+  /* — світле (з оригіналу) — */
+  --paper:#EFEDED;
+  --muted:#94A3B2;
+  --faint:#8592A1;   /* підняте з #6C7A89: тепер AA (≥4.6) на всіх трьох тлах */
+
+  --line:rgba(239,237,237,.11);
+  --line-strong:rgba(239,237,237,.20);
+
+  --r-card:8px;
+  --r-btn:6px;
+  --maxw:1280px;
+  --gutter:clamp(20px,4vw,40px);
+  --section:clamp(72px,9vw,124px);
+  --header-h:80px;
+
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+
+html{scroll-behavior:smooth}
+html.block{overflow:hidden}
+
+body{
+  margin:0;
+  background:var(--ink);
+  color:var(--paper);
+  font-family:"e-Ukraine Head",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  font-weight:300;
+  font-size:16px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  overflow-x:hidden;
+}
+
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+ul{margin:0;padding:0;list-style:none}
+h1,h2,h3,h4,p{margin:0}
+button{font:inherit;color:inherit;background:none;border:none;padding:0;cursor:pointer}
+input,textarea{font:inherit}
+
+:focus-visible{outline:2px solid var(--flame-hi);outline-offset:3px;border-radius:2px}
+
+/* підпис лише для читачів екрана (поле підписки має видимий placeholder) */
+.visually-hidden{
+  position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0;
+}
+
+.container{width:min(100% - (var(--gutter) * 2),var(--maxw));margin-inline:auto}
+
+.main{flex:1 0 auto;overflow:clip}
+
+/* ---- утиліта: службовий підпис ---- */
+.eyebrow{
+  display:inline-flex;align-items:center;gap:12px;
+  font-size:12px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--flame-hi);
+}
+.eyebrow::before{content:"";width:26px;height:2px;background:var(--flame-grad);flex:none}
+
+/* ============================================================================
+   ЗАГОЛОВКИ СЕКЦІЙ
+   Було: <button class="btn no-click"> у рамці — виглядало клікабельним.
+   Стало: справжній <h2> з вогняною рискою.
+   ============================================================================ */
+.btn.no-click,.sec-title{
+  display:block;width:auto;border:none;background:none;padding:0;cursor:default;
+  font-weight:700;
+  font-size:clamp(26px,3.4vw,40px);
+  line-height:1.1;
+  letter-spacing:.005em;
+  text-transform:uppercase;
+  color:var(--paper);
+  margin:0 0 clamp(36px,4.5vw,56px);
+  position:relative;
+  padding-top:26px;
+}
+.btn.no-click::before,.sec-title::before{
+  content:"";position:absolute;top:0;left:0;
+  width:48px;height:3px;background:var(--flame-grad);border-radius:2px;
+}
+
+/* ============================================================================
+   КНОПКИ
+   Один розмір, один радіус, однакова висота. Помаранчевий — тільки для
+   головної дії.
+   ============================================================================ */
+.start__btn,.quotes__btn,.products__btn,.product__more,.form__btn,.header__cta{
+  display:inline-flex;align-items:center;justify-content:center;gap:12px;
+  min-height:54px;padding:0 30px;
+  border-radius:var(--r-btn);
+  font-size:15px;font-weight:500;letter-spacing:.02em;
+  text-align:center;white-space:nowrap;
+  border:1px solid transparent;
+  transition:transform .25s var(--ease),box-shadow .25s var(--ease),
+             background-color .25s var(--ease),border-color .25s var(--ease),color .25s var(--ease);
+}
+.start__btn svg,.quotes__btn svg,.products__btn svg,.product__more svg,.form__btn svg,.header__cta svg{
+  width:18px;height:18px;flex:none;transition:transform .25s var(--ease)
+}
+
+/* головна (заповнена) */
+.start__btn--grad,.form__btn,.header__cta,.products__btn,.quotes__btn{
+  background-image:var(--flame-grad);color:#fff;
+  box-shadow:0 10px 26px -12px rgba(255,94,1,.85);
+}
+.start__btn--grad:hover,.form__btn:hover,.header__cta:hover,.products__btn:hover,.quotes__btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 16px 34px -12px rgba(255,94,1,.95);
+}
+.start__btn--grad:hover svg,.form__btn:hover svg,.products__btn:hover svg,
+.quotes__btn:hover svg{transform:translateX(4px)}
+
+/* другорядна (примарна) */
+.start__btn--defolt,.product__more{
+  background:rgba(239,237,237,.04);
+  border-color:var(--line-strong);
+  color:var(--paper);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+}
+.start__btn--defolt:hover,.product__more:hover{
+  border-color:var(--flame-hi);color:var(--flame-hi);
+  background:rgba(255,126,2,.08);
+  transform:translateY(-2px);
+}
+
+/* ============================================================================
+   ШАПКА
+   Було: біла смуга + великий помаранчевий блок телефону + прапори мов.
+   Стало: темне скло, тихий телефон, текстовий перемикач UA/EN, одна дія.
+   ============================================================================ */
+.header{
+  position:fixed;top:0;left:0;right:0;z-index:60;
+  background:rgba(15,20,26,.78);
+  -webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);
+  border-bottom:1px solid var(--line);
+  transition:transform .4s var(--ease),background-color .3s var(--ease);
+}
+.header__wrapper,.header__wrap{display:contents}
+.header .container{
+  display:flex;align-items:center;justify-content:space-between;gap:24px;
+  min-height:var(--header-h);
+}
+.header__logo{display:flex;align-items:center;flex:none;z-index:2}
+.header__logo img{height:34px;width:auto}
+
+.header__content{display:flex;align-items:center;gap:clamp(18px,2.5vw,34px)}
+.header__navigation{display:flex}
+.header__list{display:flex;align-items:center;gap:clamp(16px,2vw,30px)}
+.header__link{
+  position:relative;display:inline-block;padding:8px 0;
+  font-size:13px;font-weight:500;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--muted);transition:color .22s var(--ease);
+}
+.header__link::after{
+  content:"";position:absolute;left:0;right:100%;bottom:2px;height:2px;
+  background:var(--flame-grad);border-radius:2px;
+  transition:right .28s var(--ease);
+}
+.header__link:hover{color:var(--paper)}
+.header__link:hover::after{right:0}
+.header__link--active{color:var(--paper)}
+.header__link--active::after{right:0}
+
+/* телефон — тихий, помаранчевий лише гліф */
+.header__tel{
+  display:inline-flex;align-items:center;gap:9px;flex:none;
+  padding:9px 16px;border-radius:var(--r-btn);
+  border:1px solid var(--line-strong);
+  font-size:14px;font-weight:500;letter-spacing:.01em;color:var(--paper);
+  white-space:nowrap;
+  transition:border-color .22s var(--ease),background-color .22s var(--ease);
+}
+.header__tel svg{width:16px;height:16px;fill:var(--flame-hi);flex:none}
+.header__tel:hover{border-color:var(--flame-hi);background:rgba(255,126,2,.08)}
+.header__tel--mobile{display:none}
+
+/* перемикач мов: текст замість прапорів */
+.lang__button,.lang--header{display:flex;align-items:center;flex:none}
+.lang__list{display:flex;align-items:center;border:1px solid var(--line-strong);border-radius:var(--r-btn);overflow:hidden}
+.lang__link{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:42px;height:34px;padding:0 6px;
+  font-size:12px;font-weight:500;letter-spacing:.09em;
+  color:var(--faint);transition:color .2s var(--ease),background-color .2s var(--ease);
+}
+.lang__link:hover{color:var(--paper);background:rgba(239,237,237,.06)}
+.lang__link--on{background-image:var(--flame-grad);color:#fff}
+.lang__link--on:hover{color:#fff}
+
+.header__cta{min-height:44px;padding:0 20px;font-size:13.5px;letter-spacing:.06em;text-transform:uppercase}
+
+/* бургер */
+.hamburger{display:none;width:44px;height:44px;align-items:center;justify-content:center;flex:none;z-index:2}
+.hamburger-menu{display:flex;flex-direction:column;gap:6px;width:24px}
+.hamburger-line{display:block;height:2px;width:100%;background:var(--paper);border-radius:2px;
+  transition:transform .3s var(--ease),opacity .3s var(--ease)}
+.hamburger--active .hamburger-line:first-child{transform:translateY(4px) rotate(45deg)}
+.hamburger--active .hamburger-line:last-child{transform:translateY(-4px) rotate(-45deg)}
+
+/* ============================================================================
+   ГЕРО СТОРІНКИ ГАЛУЗІ
+   Було: текст лежав просто на фото, круглі мініатюри обрізало краєм екрана.
+   Стало: градієнтна завіса під текстом, навігація галузей — усередині сітки.
+   ============================================================================ */
+.start{
+  position:relative;
+  min-height:min(92vh,860px);
+  display:flex;align-items:flex-end;
+  padding:calc(var(--header-h) + clamp(56px,9vw,110px)) 0 clamp(56px,7vw,92px);
+  overflow:hidden;
+  isolation:isolate;
+}
+.start__bg{position:absolute;inset:0;z-index:-2}
+.start__bg img{width:100%;height:100%;object-fit:cover;object-position:center}
+.start::before{
+  content:"";position:absolute;inset:0;z-index:-1;
+  background:
+    linear-gradient(to right,rgba(15,20,26,.94) 0%,rgba(15,20,26,.80) 38%,rgba(15,20,26,.30) 72%,rgba(15,20,26,.45) 100%),
+    linear-gradient(to top,var(--ink) 0%,rgba(15,20,26,.25) 42%,rgba(15,20,26,.55) 100%);
+}
+.start .container{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  grid-template-areas:"copy rail" "cta rail";
+  align-items:end;
+  gap:clamp(28px,4vw,56px);
+  width:min(100% - (var(--gutter) * 2),var(--maxw));
+}
+.start__wrapper{grid-area:copy;max-width:44ch}
+.start__title{
+  font-weight:700;
+  font-size:clamp(34px,5.4vw,68px);
+  line-height:1.03;
+  letter-spacing:-.018em;
+  text-transform:uppercase;
+  margin:0 0 22px;
+}
+.start__title span{display:block;font-weight:300;color:rgba(239,237,237,.72)}
+.start__text{
+  font-size:clamp(15px,1.35vw,18px);
+  color:rgba(239,237,237,.80);
+  max-width:52ch;
+}
+.start__text + .start__text{margin-top:10px}
+.start__buttons{grid-area:cta;display:flex;flex-wrap:wrap;gap:14px;margin-top:clamp(28px,3.5vw,42px)}
+
+/* локатор галузі — фірмовий знак: три трикутники, світиться поточний */
+.sector-tag{display:inline-flex;align-items:center;gap:14px;margin-bottom:22px}
+.triad{width:30px;height:26px;flex:none;overflow:visible}
+.triad polygon{fill:rgba(239,237,237,.16);transition:fill .45s var(--ease)}
+.triad .triad__on{fill:url(#flameGrad)}
+.sector-tag__label{
+  font-size:12.5px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(239,237,237,.75);
+}
+
+/* рейка галузей — навігація + той самий знак */
+.start__navigation{grid-area:rail;align-self:end}
+.start__list{display:flex;flex-direction:column;gap:6px}
+.start__link{
+  display:flex;align-items:center;gap:14px;
+  padding:12px 18px 12px 14px;
+  border:1px solid transparent;border-radius:var(--r-btn);
+  font-size:13.5px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(239,237,237,.60);
+  background:rgba(15,20,26,.42);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  transition:color .25s var(--ease),border-color .25s var(--ease),background-color .25s var(--ease);
+}
+.start__link .triad{width:22px;height:19px}
+.start__link:hover{color:var(--paper);border-color:var(--line-strong);background:rgba(15,20,26,.62)}
+.start__item--active .start__link{
+  color:var(--paper);
+  border-color:rgba(255,126,2,.45);
+  background:rgba(255,126,2,.10);
+}
+
+/* ============================================================================
+   ГОЛОВНА — три повноекранні панелі
+   ============================================================================ */
+.header__primary{
+  background:linear-gradient(to bottom,rgba(10,14,18,.72),rgba(10,14,18,0));
+  border:none;-webkit-backdrop-filter:none;backdrop-filter:none;
+}
+.header__primary .lang__list{border-color:rgba(239,237,237,.34)}
+.header__primary .lang__link{color:rgba(239,237,237,.82)}
+.header__primary .lang__link--on{color:#fff}
+.header__primary .container{align-items:flex-start;padding-top:26px}
+.primary{position:relative}
+.primary__swiper{overflow:hidden}
+.primary__list{min-height:100vh}                 /* .swiper-wrapper вже flex */
+.primary__item{position:relative;overflow:hidden;isolation:isolate;display:flex;
+  flex:1;min-height:100vh}   /* swiper у режимі auto ділить ширину порівну */
+.primary__bg{position:absolute;inset:0;z-index:-2}
+.primary__bg img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform 1.1s var(--ease),filter .6s var(--ease);
+  filter:saturate(.85) contrast(1.04);
+}
+.primary__item::before{
+  content:"";position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(to top,rgba(10,14,18,.94) 8%,rgba(10,14,18,.42) 55%,rgba(10,14,18,.55) 100%);
+  transition:background .5s var(--ease);
+}
+.primary__item:hover .primary__bg img{transform:scale(1.06);filter:saturate(1) contrast(1.06)}
+.primary__item:hover::before{background:linear-gradient(to top,rgba(10,14,18,.90) 8%,rgba(10,14,18,.30) 58%,rgba(10,14,18,.50) 100%)}
+.primary__item + .primary__item{box-shadow:-1px 0 0 rgba(239,237,237,.12)}
+.primary__wrapper{display:flex;align-items:flex-end;width:100%;padding:0 0 clamp(48px,6vw,84px)}
+.primary__wrapper .container{width:min(100% - 56px,520px);margin-inline:auto}
+.primary__text{
+  display:inline-flex;align-items:center;gap:12px;
+  font-size:12px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(239,237,237,.72);margin-bottom:16px;
+}
+.primary__text::before{content:"";width:24px;height:2px;background:var(--flame-grad)}
+.primary__title{
+  font-weight:700;font-size:clamp(26px,2.5vw,40px);line-height:1.06;
+  letter-spacing:-.01em;text-transform:uppercase;margin:0 0 26px;
+}
+.primary__title span{display:block;font-weight:300;color:rgba(239,237,237,.70)}
+.primary__link{
+  display:inline-flex;align-items:center;gap:12px;
+  min-height:52px;padding:0 28px;border-radius:var(--r-btn);
+  background-image:var(--flame-grad);color:#fff;
+  font-size:15px;font-weight:500;
+  box-shadow:0 10px 26px -12px rgba(255,94,1,.85);
+  transition:transform .25s var(--ease),box-shadow .25s var(--ease);
+}
+.primary__link:hover{transform:translateY(-2px);box-shadow:0 16px 34px -12px rgba(255,94,1,.95)}
+.primary__icon{width:18px;height:16px;transition:transform .25s var(--ease)}
+.primary__link:hover .primary__icon{transform:translateX(4px)}
+
+/* В оригіналі на вузьких екранах перша панель перетворювалась на список
+   із трьох посилань, а решта панелей ховались. Тут інший підхід: панелі
+   просто стають стосом, тож дублюючі «мобільні» посилання не потрібні. */
+.primary__text--mobile,.primary__link--mobile{display:none}
+
+/* ============================================================================
+   ТОВАРИ
+   Було: суцільна помаранчева плашка під кожним фото — та сама, що й у кнопок.
+   Стало: темне скло + вогняна лінія, помаранчевий лишився для дій.
+   ============================================================================ */
+/* у вихідних шаблонах секція зветься то .product, то .products */
+.product,.products{padding:var(--section) 0}
+.product__list{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:clamp(16px,1.8vw,24px);
+}
+.product__item{
+  position:relative;overflow:hidden;
+  border:1px solid var(--line);border-radius:var(--r-card);
+  background:var(--ink-raise);
+  transition:transform .35s var(--ease),border-color .35s var(--ease),box-shadow .35s var(--ease);
+}
+.product__item.extra{display:none}
+.product.with-extra .product__item.extra,
+.products.with-extra .product__item.extra{display:block;animation:rise .5s var(--ease) both}
+.product__item:hover{transform:translateY(-5px);border-color:rgba(255,126,2,.5);box-shadow:0 20px 44px -26px #000}
+.product__header{aspect-ratio:4/3;overflow:hidden;background:var(--steel-deep)}
+.product__header img{width:100%;height:100%;object-fit:cover;transition:transform .7s var(--ease)}
+.product__item:hover .product__header img{transform:scale(1.07)}
+.product__content{
+  position:relative;display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:20px 22px;min-height:82px;
+}
+.product__content::before{
+  content:"";position:absolute;top:0;left:0;right:100%;height:2px;
+  background:var(--flame-grad);transition:right .4s var(--ease);
+}
+.product__item:hover .product__content::before{right:0}
+.product__name{font-size:16px;font-weight:400;line-height:1.3;color:var(--paper)}
+.product__arrow{
+  width:34px;height:34px;flex:none;border-radius:50%;
+  border:1px solid var(--line-strong);
+  display:grid;place-items:center;
+  transition:background-color .3s var(--ease),border-color .3s var(--ease),transform .3s var(--ease);
+}
+.product__arrow svg{width:15px;height:12px;fill:var(--muted);transition:fill .3s var(--ease)}
+.product__item:hover .product__arrow{background-image:var(--flame-grad);border-color:transparent;transform:translateX(3px)}
+.product__item:hover .product__arrow svg{fill:#fff}
+
+.product__foot{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-top:clamp(34px,4vw,52px)}
+.product.with-extra .product__more,
+.products.with-extra .product__more{display:none}
+
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+/* ============================================================================
+   БРЕНДИ
+   Було: великі білі прямокутники, стрілки-невидимки в кутку.
+   Стало: рівні плитки, логотип на світлій підкладці, стрілки біля заголовка.
+   ============================================================================ */
+.brands{padding:var(--section) 0;background:var(--steel-deep);border-block:1px solid var(--line)}
+.brands .container{position:relative}
+.brands__swiper{overflow:hidden}
+.brands__slide{padding:0 10px;height:auto}
+.brands__header{
+  display:grid;place-items:center;
+  aspect-ratio:16/7;padding:22px 28px;
+  background:var(--paper);
+  border-radius:var(--r-card);
+  transition:transform .35s var(--ease),box-shadow .35s var(--ease);
+}
+.brands__header img{width:100%;height:clamp(54px,5vw,74px);object-fit:contain}
+.brands__slide:hover .brands__header{transform:translateY(-4px);box-shadow:0 20px 40px -24px #000}
+.brands__name{
+  margin-top:16px;text-align:center;
+  font-size:14px;font-weight:400;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);transition:color .3s var(--ease);
+}
+.brands__slide:hover .brands__name{color:var(--paper)}
+
+.brands__navigation{
+  position:absolute;top:6px;right:0;display:flex;gap:10px;z-index:2;
+}
+.brands__prev,.brands__next{
+  width:46px;height:46px;border-radius:50%;
+  border:1px solid var(--line-strong);
+  display:grid;place-items:center;
+  transition:background-color .25s var(--ease),border-color .25s var(--ease),transform .25s var(--ease);
+}
+.brands__prev svg,.brands__next svg{width:22px;height:20px;color:var(--muted);transition:color .25s var(--ease)}
+.brands__prev:hover,.brands__next:hover{background-image:var(--flame-grad);border-color:transparent;transform:translateY(-2px)}
+.brands__prev:hover svg,.brands__next:hover svg{color:#fff}
+.brands__decor{display:none}
+
+/* слік лишається на своїх float-ширинах — свій layout не нав'язуємо */
+.brands__wrapper:not(.slick-initialized){display:flex;overflow:hidden}
+.brands__wrapper:not(.slick-initialized) .brands__slide{flex:0 0 33.3333%}
+.slick-list{margin:0 -10px}
+
+/* ============================================================================
+   ПРО НАС
+   Було: величезний трикутник-водяний знак під текстом заважав читати.
+   ============================================================================ */
+.about{padding:var(--section) 0}
+.about .container{
+  display:grid;grid-template-columns:minmax(210px,.32fr) minmax(0,1fr);
+  gap:clamp(32px,5vw,72px);align-items:start;position:relative;
+}
+.about__bg,.about__decor,.contact__decor{display:none}
+.about__left{display:flex;flex-direction:column;gap:34px}
+.about__left .btn.no-click{margin-bottom:0}
+.about__title{margin:0 0 22px}
+.about__title img{height:clamp(30px,3.4vw,44px);width:auto;
+  filter:invert(1);opacity:.94}   /* знак намальовано чорним — на темному інвертуємо */
+.about__wrap{display:flex;flex-direction:column;gap:18px;max-width:62ch}
+.about__text{font-size:clamp(15px,1.3vw,17.5px);color:rgba(239,237,237,.78)}
+.about__text:first-child{font-size:clamp(17px,1.7vw,22px);font-weight:400;color:var(--paper);line-height:1.45}
+
+/* соцмережі */
+.social__list{display:flex;flex-wrap:wrap;gap:10px}
+.social__link{
+  width:44px;height:44px;border-radius:50%;
+  border:1px solid var(--line-strong);
+  display:grid;place-items:center;
+  transition:border-color .25s var(--ease),background-color .25s var(--ease),transform .25s var(--ease);
+}
+.social__link svg{width:17px;height:17px;fill:var(--muted);transition:fill .25s var(--ease)}
+.social__link:hover{border-color:var(--flame-hi);background:rgba(255,126,2,.10);transform:translateY(-3px)}
+.social__link:hover svg{fill:var(--flame-hi)}
+
+/* ============================================================================
+   ЧОМУ МИ
+   Було: чотири суцільні помаранчеві плити — гучніші за самі кнопки.
+   Стало: темні панелі, вогонь лише в іконці та лінії при наведенні.
+   ============================================================================ */
+.why{padding:var(--section) 0;background:var(--steel);border-block:1px solid var(--line);position:relative;isolation:isolate}
+.why__list{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(16px,1.6vw,22px)}
+.why__item{
+  position:relative;overflow:hidden;
+  padding:clamp(26px,2.6vw,34px);
+  border:1px solid var(--line);border-radius:var(--r-card);
+  background:rgba(15,20,26,.55);
+  transition:transform .35s var(--ease),border-color .35s var(--ease),background-color .35s var(--ease);
+}
+.why__item::before{
+  content:"";position:absolute;top:0;left:0;right:100%;height:2px;
+  background:var(--flame-grad);transition:right .45s var(--ease);
+}
+.why__item:hover{transform:translateY(-5px);border-color:var(--line-strong);background:rgba(15,20,26,.78)}
+.why__item:hover::before{right:0}
+.why__header{display:flex;flex-direction:column;align-items:flex-start;gap:20px;margin-bottom:14px}
+.why__icon{
+  width:52px;height:52px;flex:none;border-radius:13px;
+  display:grid;place-items:center;
+  background:rgba(255,126,2,.12);
+  border:1px solid rgba(255,126,2,.24);
+  transition:background-color .35s var(--ease)
+}
+.why__icon svg{width:26px;height:26px;stroke:var(--flame-hi);fill:none;
+  stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.why__item:hover .why__icon{background:rgba(255,126,2,.2)}
+.why__title{font-size:clamp(17px,1.5vw,20px);font-weight:500;line-height:1.2;margin:0;color:var(--paper)}
+.why__text{font-size:14.5px;color:var(--muted);line-height:1.6}
+
+/* ============================================================================
+   ПАРТНЕРИ
+   Було: різнокольорові логотипи різного розміру на темному — каша.
+   Стало: єдині плитки, знебарвлені логотипи, колір повертається при наведенні.
+   ============================================================================ */
+.partner{padding:var(--section) 0;position:relative;isolation:isolate}
+.partner__bg{display:none}
+.partner__list{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:var(--r-card);overflow:hidden;
+}
+.partner__item{background:var(--ink)}
+.partner__link{
+  display:grid;place-items:center;
+  min-height:clamp(120px,13vw,164px);padding:26px 30px;
+  transition:background-color .3s var(--ease);
+}
+.partner__link img{
+  max-height:56px;width:auto;object-fit:contain;
+  /* логотипи різнокаліберні: частина темна, частина світла. Зводимо всі
+     до білого силуету — стіна читається як одне ціле, колір вертається
+     при наведенні. */
+  filter:grayscale(1) brightness(0) invert(1);
+  opacity:.5;
+  transition:filter .35s var(--ease),opacity .35s var(--ease),transform .35s var(--ease);
+}
+/* два логотипи — детальні багатоколірні емблеми: силует із них робить
+   пляму, тож їм лишаємо внутрішню деталізацію, тільки знебарвлену */
+.partner__link img[src$="partner-3.png"],
+.partner__link img[src$="partner-7.png"]{
+  filter:grayscale(1) brightness(1.75) contrast(1.15);
+  opacity:.6;
+}
+.partner__link:hover{background:var(--ink-raise)}
+.partner__link:hover img{filter:none;opacity:1;transform:scale(1.05)}
+
+/* ============================================================================
+   СМУГА ЗАКЛИКУ
+   ============================================================================ */
+.quotes{position:relative;padding:clamp(64px,7vw,96px) 0;overflow:hidden;isolation:isolate}
+.quotes__bg{position:absolute;inset:0;z-index:-2}
+.quotes__bg img{width:100%;height:100%;object-fit:cover;filter:saturate(.7)}
+.quotes::before{
+  content:"";position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(100deg,rgba(15,20,26,.96) 0%,rgba(15,20,26,.86) 45%,rgba(27,41,56,.72) 100%);
+}
+.quotes .container{display:flex;align-items:center;justify-content:space-between;gap:clamp(32px,5vw,64px)}
+.quotes__wrapper{max-width:62ch}
+.quotes__title{
+  font-weight:700;font-size:clamp(26px,3.4vw,44px);line-height:1.12;
+  letter-spacing:-.012em;margin:0 0 28px;
+}
+.quotes__title span{
+  background-image:var(--flame-grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.quotes__img{flex:none;width:clamp(120px,15vw,190px);opacity:.95}
+.quotes__img img{width:100%;height:auto}
+
+/* ============================================================================
+   КОНТАКТИ + ФОРМА
+   Було: білі поля без підписів, email сірим по темному, декоративний клин
+   налізав на форму.
+   ============================================================================ */
+.contact{padding:var(--section) 0;position:relative;isolation:isolate}
+.contact__wrapper{
+  display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);
+  gap:clamp(32px,5vw,72px);align-items:start;
+}
+.contact__left{display:flex;flex-direction:column;gap:32px}
+
+.footer-address__list{display:flex;flex-direction:column;gap:2px}
+.footer-address__item{border-top:1px solid var(--line)}
+.footer-address__item:last-child{border-bottom:1px solid var(--line)}
+.footer-address__link{
+  display:flex;align-items:center;gap:16px;padding:18px 4px;
+  font-size:16px;font-weight:400;color:var(--paper);
+  transition:color .22s var(--ease);
+}
+.footer-address__link svg{
+  width:20px;height:20px;flex:none;fill:var(--flame-hi);
+}
+.footer-address__link:hover{color:var(--flame-hi)}
+.footer-address__link--contact-tel{font-size:clamp(20px,2.2vw,27px);font-weight:500;letter-spacing:.01em}
+
+/* поля */
+.form__list{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form__item{display:flex;flex-direction:column;gap:8px}
+.form__item:nth-child(3),.form__item:nth-child(4){grid-column:1 / -1}
+.form__label{
+  font-size:11.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--faint);
+}
+.form__input,.form__textarea{
+  width:100%;
+  background:rgba(239,237,237,.045);
+  border:1px solid var(--line-strong);
+  border-radius:var(--r-btn);
+  padding:15px 17px;
+  color:var(--paper);font-size:15.5px;font-weight:300;
+  transition:border-color .22s var(--ease),background-color .22s var(--ease),box-shadow .22s var(--ease);
+}
+.form__input::placeholder,.form__textarea::placeholder{color:var(--faint)}
+.form__input:focus,.form__textarea:focus{
+  outline:none;border-color:var(--flame-hi);background:rgba(255,126,2,.06);
+  box-shadow:0 0 0 3px rgba(255,126,2,.14);
+}
+.form__textarea{resize:vertical;min-height:128px}
+.form__btn{margin-top:22px;width:100%}
+
+/* ============================================================================
+   ПІДВАЛ
+   ============================================================================ */
+.footer{flex:none;background:var(--steel-deep);border-top:1px solid var(--line)}
+.footer__wrapper{padding:clamp(48px,5.5vw,72px) 0 clamp(36px,4vw,52px)}
+.footer__wrapper .container{
+  display:grid;grid-template-columns:minmax(220px,.9fr) minmax(0,1.6fr);
+  gap:clamp(32px,5vw,64px);
+}
+.footer__left{display:flex;flex-direction:column;gap:26px}
+.footer__left > a img{height:34px;width:auto}
+.footer__left .footer-address__item{border:none}
+.footer__left .footer-address__link{padding:7px 0;font-size:14.5px;color:var(--muted)}
+.footer__left .footer-address__link svg{width:16px;height:16px}
+.footer__left .footer-address__link:hover{color:var(--paper)}
+
+.footer__right{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr) minmax(0,1.25fr);
+  gap:clamp(24px,3vw,40px)}
+.footer__list{display:contents}
+.footer__title{
+  font-size:12px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--faint);margin:0 0 18px;
+}
+.menu__list--footer{display:flex;flex-direction:column;gap:11px}
+.menu__link{font-size:14.5px;color:var(--muted);transition:color .2s var(--ease)}
+.menu__link:hover{color:var(--flame-hi)}
+
+.footer__subscribe{display:flex;flex-direction:column}
+.footer__wrap{display:flex;gap:8px}
+.footer__input{
+  flex:1;min-width:0;
+  background:rgba(239,237,237,.05);border:1px solid var(--line-strong);
+  border-radius:var(--r-btn);padding:12px 14px;
+  color:var(--paper);font-size:14px;font-weight:300;
+  transition:border-color .22s var(--ease);
+}
+.footer__input::placeholder{color:var(--faint)}
+.footer__input:focus{outline:none;border-color:var(--flame-hi)}
+.footer__send{
+  width:46px;height:46px;flex:none;border-radius:var(--r-btn);
+  background-image:var(--flame-grad);
+  display:grid;place-items:center;
+  transition:transform .22s var(--ease),box-shadow .22s var(--ease);
+}
+.footer__send svg{width:18px;height:16px;fill:#fff}
+.footer__send:hover{transform:translateY(-2px);box-shadow:0 10px 22px -10px rgba(255,94,1,.9)}
+.social__list--footer{margin-top:26px;gap:8px}
+.social__list--footer .social__link{width:38px;height:38px}
+.social__list--footer .social__link svg{width:15px;height:15px}
+
+.footer__bottom{border-top:1px solid var(--line);padding:20px 0}
+.footer__protected{display:block;text-align:center;font-size:13px;color:var(--faint)}
+
+/* ============================================================================
+   МОДАЛКА
+   ============================================================================ */
+.overlay{
+  position:fixed;inset:0;z-index:80;
+  background:rgba(8,11,15,.72);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  opacity:0;visibility:hidden;transition:opacity .3s var(--ease),visibility .3s var(--ease);
+}
+.overlay.active-overlay{opacity:1;visibility:visible}
+.popup{
+  position:fixed;top:50%;left:50%;z-index:90;
+  width:min(100% - 32px,520px);
+  transform:translate(-50%,-46%) scale(.98);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .32s var(--ease),transform .32s var(--ease),visibility .32s var(--ease);
+}
+.popup.popup__show{opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+.popup__container{
+  position:relative;
+  background:var(--ink-raise);
+  border:1px solid var(--line-strong);
+  border-radius:14px;
+  padding:clamp(28px,4vw,40px);
+  max-height:88vh;overflow-y:auto;
+  box-shadow:0 40px 90px -40px #000;
+}
+.popup__close{
+  position:absolute;top:16px;right:16px;
+  width:40px;height:40px;border-radius:50%;
+  border:1px solid var(--line-strong);display:grid;place-items:center;
+  transition:border-color .22s var(--ease),background-color .22s var(--ease),transform .22s var(--ease);
+}
+.popup__close svg{width:14px;height:14px;fill:var(--muted);transition:fill .22s var(--ease)}
+.popup__close:hover{border-color:var(--flame-hi);background:rgba(255,126,2,.1);transform:rotate(90deg)}
+.popup__close:hover svg{fill:var(--flame-hi)}
+.popup__title{font-size:clamp(21px,2.4vw,27px);font-weight:700;line-height:1.15;margin:0 0 10px;padding-right:44px}
+.popup__text{font-size:14.5px;color:var(--muted);margin:0 0 26px}
+/* згода з документами під формою */
+.form__politics{
+  display:block;margin-top:16px;
+  font-size:12.5px;line-height:1.55;color:var(--faint);
+}
+.form__politics a{color:var(--muted);text-decoration:underline;text-underline-offset:3px;
+  text-decoration-color:rgba(239,237,237,.3);transition:color .2s var(--ease),text-decoration-color .2s var(--ease)}
+.form__politics a:hover{color:var(--flame-hi);text-decoration-color:var(--flame-hi)}
+
+.popup .form__list{grid-template-columns:1fr}
+.popup .form__item{grid-column:1 / -1}
+
+/* ============================================================================
+   ПОЯВА ПРИ ПРОКРУТЦІ — один стриманий прийом на весь сайт
+   ============================================================================ */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.reveal.is-in{opacity:1;transform:none}
+.reveal-stagger > *{opacity:0;transform:translateY(18px);
+  transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.reveal-stagger.is-in > *{opacity:1;transform:none}
+.reveal-stagger.is-in > *:nth-child(1){transition-delay:.00s}
+.reveal-stagger.is-in > *:nth-child(2){transition-delay:.06s}
+.reveal-stagger.is-in > *:nth-child(3){transition-delay:.12s}
+.reveal-stagger.is-in > *:nth-child(4){transition-delay:.18s}
+.reveal-stagger.is-in > *:nth-child(5){transition-delay:.24s}
+.reveal-stagger.is-in > *:nth-child(6){transition-delay:.30s}
+
+/* ============================================================================
+   АДАПТИВ
+   ============================================================================ */
+@media (max-width:1200px){
+  .header__cta{display:none}
+  .why__list{grid-template-columns:repeat(2,1fr)}
+  /* нижче 1200 swiper не ініціалізується — панелі стають стосом */
+  .primary__list{flex-direction:column;min-height:0}
+  .primary__item{flex:none;width:100%;min-height:clamp(340px,56vh,520px)}
+  .primary__item + .primary__item{box-shadow:0 -1px 0 rgba(239,237,237,.12)}
+}
+
+@media (max-width:1024px){
+  .start .container{grid-template-columns:1fr;grid-template-areas:"copy" "rail" "cta"}
+  .start__navigation{justify-self:start}
+  .start__list{flex-direction:row;flex-wrap:wrap}
+  .product__list{grid-template-columns:repeat(2,1fr)}
+  .contact__wrapper{grid-template-columns:1fr}
+  .about .container{grid-template-columns:1fr}
+  .about__left{flex-direction:row;align-items:center;justify-content:space-between;flex-wrap:wrap}
+  .footer__wrapper .container{grid-template-columns:1fr}
+  .quotes .container{flex-direction:column;align-items:flex-start}
+  .quotes__img{align-self:flex-end;margin-top:-40px}
+}
+
+@media (max-width:860px){
+  :root{--header-h:68px}
+  .hamburger{display:flex}
+  .header__tel{display:none}
+  .header__tel--mobile{display:inline-flex;order:3;width:100%;justify-content:center}
+  .header__content{
+    position:fixed;top:var(--header-h);left:0;right:0;
+    display:flex;flex-direction:column;align-items:stretch;gap:0;
+    padding:0 var(--gutter);
+    background:var(--ink);   /* повністю непрозоре: крізь напівпрозоре просвічував геро */
+    border-bottom:1px solid var(--line);
+    max-height:0;overflow:hidden;opacity:0;
+    transition:max-height .42s var(--ease),opacity .3s var(--ease),padding .42s var(--ease);
+  }
+  .header--open .header__content{max-height:min(76vh,560px);opacity:1;padding:14px var(--gutter) 26px;overflow-y:auto}
+  .header__navigation{width:100%}
+  .header__list{flex-direction:column;align-items:stretch;gap:0;width:100%}
+  .header__item{border-bottom:1px solid var(--line)}
+  .header__link{display:block;padding:16px 0;font-size:15px;letter-spacing:.08em}
+  .header__link::after{display:none}
+  .header__link--active{color:var(--flame-hi)}
+  .lang__button{order:2;margin-top:18px;align-self:flex-start}
+  .partner__list{grid-template-columns:repeat(2,1fr)}
+  .footer__right{grid-template-columns:1fr 1fr}
+  .footer__subscribe{grid-column:1 / -1}
+}
+
+@media (max-width:680px){
+  .start{min-height:auto;padding-top:calc(var(--header-h) + 72px)}
+  .start__list{flex-direction:column;width:100%}
+  .start__link{width:100%}
+  .start__buttons > *{flex:1 1 100%}
+  /* на вузькому екрані соцмережі не мають розривати заголовок і текст */
+  .about .container{display:flex;flex-direction:column;gap:26px}
+  .about__left{display:contents}
+  .about .btn.no-click{order:1;margin-bottom:0}
+  .about__right{order:2}
+  .social__list--about{order:3}
+  .product__list{grid-template-columns:1fr}
+  .why__list{grid-template-columns:1fr}
+  .form__list{grid-template-columns:1fr}
+  .form__item:nth-child(-n+2){grid-column:1 / -1}
+  .footer__right{grid-template-columns:1fr}
+  .primary__title{font-size:clamp(24px,7vw,34px)}
+  .primary__wrapper{padding-bottom:56px}
+  .quotes__img{width:110px;margin-top:-16px}
+}
+
+@media (max-width:480px){
+  .partner__list{grid-template-columns:1fr}
+  .about__left{flex-direction:column;align-items:flex-start}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;
+    transition-duration:.01ms!important;scroll-behavior:auto!important}
+  .reveal,.reveal-stagger > *{opacity:1!important;transform:none!important}
+}

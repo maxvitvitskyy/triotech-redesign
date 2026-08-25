@@ -478,12 +478,15 @@ img {
   --line:rgba(239,237,237,.11);
   --line-strong:rgba(239,237,237,.20);
 
-  --r-card:8px;
-  --r-btn:6px;
+  --r-card:12px;
+  --r-btn:12px;
+  --r-bar:20px;      /* плаваюча панель шапки */
+  --bar-pad:clamp(14px,1.6vw,22px);
   --maxw:1280px;
   --gutter:clamp(20px,4vw,40px);
   --section:clamp(72px,9vw,124px);
-  --header-h:80px;
+  --header-h:68px;   /* висота самої панелі */
+  --header-top:14px; /* відступ панелі від верху екрана */
 
   --ease:cubic-bezier(.22,.61,.36,1);
 }
@@ -608,17 +611,24 @@ input,textarea{font:inherit}
    Було: біла смуга + великий помаранчевий блок телефону + прапори мов.
    Стало: темне скло, тихий телефон, текстовий перемикач UA/EN, одна дія.
    ============================================================================ */
+/* Панель не притиснута до країв: вона висить над контентом по ширині сітки
+   сайту, зі скругленими кутами й розмитим напівпрозорим тлом. */
 .header{
-  position:fixed;top:0;left:0;right:0;z-index:60;
-  background:rgba(15,20,26,.78);
-  -webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);
-  border-bottom:1px solid var(--line);
-  transition:transform .4s var(--ease),background-color .3s var(--ease);
+  position:fixed;top:var(--header-top);left:0;right:0;z-index:60;
+  background:none;border:none;
+  transition:transform .4s var(--ease);
 }
 .header__wrapper,.header__wrap{display:contents}
 .header .container{
-  display:flex;align-items:center;justify-content:space-between;gap:24px;
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
   min-height:var(--header-h);
+  position:relative;
+  padding-inline:var(--bar-pad);
+  background:rgba(15,20,26,.66);
+  -webkit-backdrop-filter:blur(20px) saturate(1.5);backdrop-filter:blur(20px) saturate(1.5);
+  border:1px solid var(--line-strong);
+  border-radius:var(--r-bar);
+  box-shadow:0 18px 44px -28px rgba(0,0,0,.9);
 }
 .header__logo{display:flex;align-items:center;flex:none;z-index:2}
 .header__logo img{height:34px;width:auto}
@@ -687,7 +697,7 @@ input,textarea{font:inherit}
   position:relative;
   min-height:min(92vh,860px);
   display:flex;align-items:flex-end;
-  padding:calc(var(--header-h) + clamp(56px,9vw,110px)) 0 clamp(56px,7vw,92px);
+  padding:calc(var(--header-h) + var(--header-top) + clamp(48px,8vw,100px)) 0 clamp(56px,7vw,92px);
   overflow:hidden;
   isolation:isolate;
 }
@@ -759,14 +769,9 @@ input,textarea{font:inherit}
 /* ============================================================================
    ГОЛОВНА — три повноекранні панелі
    ============================================================================ */
-.header__primary{
-  background:linear-gradient(to bottom,rgba(10,14,18,.72),rgba(10,14,18,0));
-  border:none;-webkit-backdrop-filter:none;backdrop-filter:none;
-}
 .header__primary .lang__list{border-color:rgba(239,237,237,.34)}
 .header__primary .lang__link{color:rgba(239,237,237,.82)}
 .header__primary .lang__link--on{color:#fff}
-.header__primary .container{align-items:flex-start;padding-top:26px}
 .primary{position:relative}
 .primary__swiper{overflow:hidden}
 .primary__list{min-height:100vh}                 /* .swiper-wrapper вже flex */
@@ -1160,7 +1165,7 @@ input,textarea{font:inherit}
   position:relative;
   background:var(--ink-raise);
   border:1px solid var(--line-strong);
-  border-radius:14px;
+  border-radius:var(--r-bar);
   padding:clamp(28px,4vw,40px);
   max-height:88vh;overflow-y:auto;
   box-shadow:0 40px 90px -40px #000;
@@ -1233,19 +1238,27 @@ input,textarea{font:inherit}
   .hamburger{display:flex}
   .header__tel{display:none}
   .header__tel--mobile{display:inline-flex;order:3;width:100%;justify-content:center}
+  /* Меню — окрема плаваюча картка рівно під панеллю, у її ширину.
+     Прив'язуємось до самої панелі: backdrop-filter робить її системою
+     координат для позиціонованих дітей, тож fixed тут не спрацював би. */
   .header__content{
-    position:fixed;top:var(--header-h);left:0;right:0;
+    position:absolute;top:calc(100% + 9px);
+    left:-1px;right:-1px;   /* рівно по зовнішньому краю панелі (мінус її рамка) */
     display:flex;flex-direction:column;align-items:stretch;gap:0;
-    padding:0 var(--gutter);
-    background:var(--ink);   /* повністю непрозоре: крізь напівпрозоре просвічував геро */
-    border-bottom:1px solid var(--line);
+    padding:0 clamp(16px,2vw,22px);
+    background:var(--ink);
+    border:1px solid var(--line-strong);border-radius:var(--r-bar);
+    box-shadow:0 24px 54px -30px rgba(0,0,0,.95);
     max-height:0;overflow:hidden;opacity:0;
-    transition:max-height .42s var(--ease),opacity .3s var(--ease),padding .42s var(--ease);
+    transition:max-height .42s var(--ease),opacity .28s var(--ease),padding .42s var(--ease);
   }
-  .header--open .header__content{max-height:min(76vh,560px);opacity:1;padding:14px var(--gutter) 26px;overflow-y:auto}
+  .header--open .header__content{
+    max-height:min(74vh,540px);opacity:1;
+    padding:10px clamp(16px,2vw,22px) 22px;overflow-y:auto;
+  }
   .header__navigation{width:100%}
   .header__list{flex-direction:column;align-items:stretch;gap:0;width:100%}
-  .header__item{border-bottom:1px solid var(--line)}
+  .header__item:not(:last-child){border-bottom:1px solid var(--line)}
   .header__link{display:block;padding:16px 0;font-size:15px;letter-spacing:.08em}
   .header__link::after{display:none}
   .header__link--active{color:var(--flame-hi)}

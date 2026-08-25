@@ -573,27 +573,28 @@ input,textarea{font:inherit}
 .start__btn svg,.quotes__btn svg,.products__btn svg,.product__more svg,.form__btn svg,.header__cta svg{
   width:18px;height:18px;flex:none;transition:transform .25s var(--ease)
 }
+.btn__arrow{width:20px!important;height:16px!important}   /* viewBox 20×16 — не спотворюємо */
 
 /* головна (заповнена) */
-.start__btn--grad,.form__btn,.header__cta,.products__btn,.quotes__btn{
+.start__btn--defolt,.form__btn,.header__cta,.products__btn,.quotes__btn{
   background-image:var(--flame-grad);color:#fff;
   box-shadow:0 10px 26px -12px rgba(255,94,1,.85);
 }
-.start__btn--grad:hover,.form__btn:hover,.header__cta:hover,.products__btn:hover,.quotes__btn:hover{
+.start__btn--defolt:hover,.form__btn:hover,.header__cta:hover,.products__btn:hover,.quotes__btn:hover{
   transform:translateY(-2px);
   box-shadow:0 16px 34px -12px rgba(255,94,1,.95);
 }
-.start__btn--grad:hover svg,.form__btn:hover svg,.products__btn:hover svg,
+.start__btn--defolt:hover svg,.form__btn:hover svg,.products__btn:hover svg,
 .quotes__btn:hover svg{transform:translateX(4px)}
 
 /* другорядна (примарна) */
-.start__btn--defolt,.product__more{
+.start__btn--grad,.product__more{
   background:rgba(239,237,237,.04);
   border-color:var(--line-strong);
   color:var(--paper);
   -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
 }
-.start__btn--defolt:hover,.product__more:hover{
+.start__btn--grad:hover,.product__more:hover{
   border-color:var(--flame-hi);color:var(--flame-hi);
   background:rgba(255,126,2,.08);
   transform:translateY(-2px);
@@ -646,7 +647,7 @@ input,textarea{font:inherit}
   white-space:nowrap;
   transition:border-color .22s var(--ease),background-color .22s var(--ease);
 }
-.header__tel svg{width:16px;height:16px;fill:var(--flame-hi);flex:none}
+.header__tel svg{width:16px;height:16px;color:var(--flame-hi);flex:none}
 .header__tel:hover{border-color:var(--flame-hi);background:rgba(255,126,2,.08)}
 .header__tel--mobile{display:none}
 
@@ -663,7 +664,8 @@ input,textarea{font:inherit}
 .lang__link--on{background-image:var(--flame-grad);color:#fff}
 .lang__link--on:hover{color:#fff}
 
-.header__cta{min-height:44px;padding:0 20px;font-size:13.5px;letter-spacing:.06em;text-transform:uppercase}
+.header__cta{min-height:44px;padding:0 18px;gap:9px;font-size:13.5px;letter-spacing:.06em;text-transform:uppercase}
+.header__cta .btn__arrow{width:17px!important;height:14px!important}
 
 /* бургер */
 .hamburger{display:none;width:44px;height:44px;align-items:center;justify-content:center;flex:none;z-index:2}
@@ -851,9 +853,9 @@ input,textarea{font:inherit}
   display:grid;place-items:center;
   transition:background-color .3s var(--ease),border-color .3s var(--ease),transform .3s var(--ease);
 }
-.product__arrow svg{width:15px;height:12px;fill:var(--muted);transition:fill .3s var(--ease)}
+.product__arrow svg{width:16px;height:13px;color:var(--muted);transition:color .3s var(--ease)}
 .product__item:hover .product__arrow{background-image:var(--flame-grad);border-color:transparent;transform:translateX(3px)}
-.product__item:hover .product__arrow svg{fill:#fff}
+.product__item:hover .product__arrow svg{color:#fff}
 
 .product__foot{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-top:clamp(34px,4vw,52px)}
 .product.with-extra .product__more,
@@ -932,9 +934,9 @@ input,textarea{font:inherit}
   display:grid;place-items:center;
   transition:border-color .25s var(--ease),background-color .25s var(--ease),transform .25s var(--ease);
 }
-.social__link svg{width:17px;height:17px;fill:var(--muted);transition:fill .25s var(--ease)}
+.social__link svg{width:17px;height:17px;color:var(--muted);transition:color .25s var(--ease)}
 .social__link:hover{border-color:var(--flame-hi);background:rgba(255,126,2,.10);transform:translateY(-3px)}
-.social__link:hover svg{fill:var(--flame-hi)}
+.social__link:hover svg{color:var(--flame-hi)}
 
 /* ============================================================================
    ЧОМУ МИ
@@ -1050,7 +1052,7 @@ input,textarea{font:inherit}
   transition:color .22s var(--ease);
 }
 .footer-address__link svg{
-  width:20px;height:20px;flex:none;fill:var(--flame-hi);
+  width:20px;height:20px;flex:none;color:var(--flame-hi);
 }
 .footer-address__link:hover{color:var(--flame-hi)}
 .footer-address__link--contact-tel{font-size:clamp(20px,2.2vw,27px);font-weight:500;letter-spacing:.01em}
@@ -1124,7 +1126,7 @@ input,textarea{font:inherit}
   display:grid;place-items:center;
   transition:transform .22s var(--ease),box-shadow .22s var(--ease);
 }
-.footer__send svg{width:18px;height:16px;fill:#fff}
+.footer__send svg{width:18px;height:16px;color:#fff}
 .footer__send:hover{transform:translateY(-2px);box-shadow:0 10px 22px -10px rgba(255,94,1,.9)}
 .social__list--footer{margin-top:26px;gap:8px}
 .social__list--footer .social__link{width:38px;height:38px}
@@ -1166,9 +1168,9 @@ input,textarea{font:inherit}
   border:1px solid var(--line-strong);display:grid;place-items:center;
   transition:border-color .22s var(--ease),background-color .22s var(--ease),transform .22s var(--ease);
 }
-.popup__close svg{width:14px;height:14px;fill:var(--muted);transition:fill .22s var(--ease)}
+.popup__close svg{width:14px;height:14px;color:var(--muted);transition:color .22s var(--ease)}
 .popup__close:hover{border-color:var(--flame-hi);background:rgba(255,126,2,.1);transform:rotate(90deg)}
-.popup__close:hover svg{fill:var(--flame-hi)}
+.popup__close:hover svg{color:var(--flame-hi)}
 .popup__title{font-size:clamp(21px,2.4vw,27px);font-weight:700;line-height:1.15;margin:0 0 10px;padding-right:44px}
 .popup__text{font-size:14.5px;color:var(--muted);margin:0 0 26px}
 /* згода з документами під формою */

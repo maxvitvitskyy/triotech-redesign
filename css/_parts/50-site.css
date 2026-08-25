@@ -317,23 +317,21 @@ input,textarea{font:inherit}
   width:clamp(300px,29vw,440px);
   aspect-ratio:1 / .866;
   display:block;
-  filter:drop-shadow(0 14px 30px rgba(0,0,0,.6));   /* щоб фігура читалась на фото */
-}
-/* Суцільна підкладка у формі всього трикутника: завдяки їй фігура читається
-   однаково на будь-якому фото, а проміжки між частинами лишаються видимими. */
-.triad-nav__list::before{
-  content:"";position:absolute;inset:0;
-  clip-path:polygon(50% 0,100% 100%,0 100%);
-  background:rgba(239,237,237,.16);
-  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
 }
 .triad-nav__item{position:static}
+/* Матове скло: напівпрозора заливка + розмиття того, що позаду.
+   Рамок немає — форму окреслює м'яке світіння по контуру (drop-shadow
+   слідує за обрізаною фігурою, на відміну від box-shadow). */
 .triad-nav__link{
   position:absolute;inset:0;display:block;
-  background:rgba(11,15,20,.86);
-  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
-  color:rgba(239,237,237,.78);
-  transition:background-color .35s var(--ease),color .35s var(--ease);
+  background:rgba(239,237,237,.07);
+  -webkit-backdrop-filter:blur(18px) saturate(1.25);
+  backdrop-filter:blur(18px) saturate(1.25);
+  color:rgba(239,237,237,.82);
+  filter:drop-shadow(0 0 1px rgba(239,237,237,.28))
+         drop-shadow(0 10px 22px rgba(0,0,0,.45));
+  transition:background-color .35s var(--ease),color .35s var(--ease),
+             filter .35s var(--ease);
 }
 .triad-nav__item--oilgas        .triad-nav__link{clip-path:polygon(50% 1.3%,74% 49.3%,26% 49.3%)}
 .triad-nav__item--military   .triad-nav__link{clip-path:polygon(25% 51.3%,49% 99.3%,1% 99.3%)}
@@ -353,14 +351,24 @@ input,textarea{font:inherit}
   font-size:clamp(9.5px,.8vw,11.5px);font-weight:500;
   letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;
 }
-.triad-nav__link:hover{background:rgba(20,27,35,.94);color:var(--paper)}
-.is-active .triad-nav__link{
-  background-image:var(--flame-grad);
-  background-color:transparent;
-  color:#fff;
+/* при наведенні — помаранчевий контур із світінням, щоб було видно,
+   що на грань можна натиснути */
+.triad-nav__link:hover,.triad-nav__link:focus-visible{
+  background:rgba(255,126,2,.14);
+  color:#fff;outline:none;
+  filter:drop-shadow(0 0 1px var(--flame-hi)) drop-shadow(0 0 1px var(--flame-hi))
+         drop-shadow(0 0 14px rgba(255,126,2,.65));
 }
-.is-active .triad-nav__link:hover{color:#fff}
-.triad-nav__link:focus-visible{outline:2px solid var(--flame-hi);outline-offset:-4px}
+/* активна грань — помаранчеве матове скло, як кнопка «Детальніше» і меню */
+.is-active .triad-nav__link{
+  background:linear-gradient(150deg,rgba(255,126,2,.52),rgba(255,46,0,.40));
+  color:#fff;
+  filter:drop-shadow(0 0 1px rgba(255,126,2,.55))
+         drop-shadow(0 10px 24px rgba(255,80,0,.30));
+}
+.is-active .triad-nav__link:hover,.is-active .triad-nav__link:focus-visible{
+  background:linear-gradient(150deg,rgba(255,126,2,.66),rgba(255,46,0,.52));
+}
 
 /* ============================================================================
    ГОЛОВНА — три повноекранні панелі
@@ -376,11 +384,38 @@ input,textarea{font:inherit}
 .header__primary .container{
   background:none;border:none;box-shadow:none;border-radius:0;
   -webkit-backdrop-filter:none;backdrop-filter:none;
-  padding-inline:0;min-height:auto;padding-top:24px;align-items:flex-start;
+  padding-inline:0;min-height:64px;padding-top:18px;align-items:center;
 }
 .header__primary .lang__list{border-color:rgba(239,237,237,.34)}
 .header__primary .lang__link{color:rgba(239,237,237,.82)}
 .header__primary .lang__link--on{color:#fff}
+
+/* На стартовому екрані немає рядка навігації, тож меню відкривається бургером
+   на будь-якій ширині. Сама шухляда — така сама плаваюча картка, як і всюди. */
+.header__primary .hamburger{display:flex}
+.header__primary .lang__button{margin-left:auto}
+.header__primary .header__content{
+  position:absolute;top:calc(100% + 9px);left:-1px;right:-1px;
+  display:flex;flex-direction:column;align-items:stretch;gap:0;
+  padding:0 clamp(16px,2vw,22px);
+  background:var(--ink);
+  border:1px solid var(--line-strong);border-radius:var(--r-bar);
+  box-shadow:0 24px 54px -30px rgba(0,0,0,.95);
+  max-height:0;overflow:hidden;opacity:0;
+  transition:max-height .42s var(--ease),opacity .28s var(--ease),padding .42s var(--ease);
+}
+.header__primary.header--open .header__content{
+  max-height:min(74vh,540px);opacity:1;
+  padding:10px clamp(16px,2vw,22px) 22px;overflow-y:auto;
+}
+.header__primary .header__navigation{width:100%}
+.header__primary .header__list{flex-direction:column;align-items:stretch;gap:0;width:100%}
+.header__primary .header__item:not(:last-child){border-bottom:1px solid var(--line)}
+.header__primary .header__link{display:block;padding:16px 0;font-size:15px;letter-spacing:.08em}
+.header__primary .header__link::after{display:none}
+.header__primary .header__tel--mobile{
+  display:inline-flex;width:100%;justify-content:center;margin-top:18px;
+}
 .primary{position:relative}
 .primary__swiper{overflow:hidden}
 .primary__intro{display:none}   /* вступ і нумерація — лише на вузьких екранах */
@@ -464,7 +499,7 @@ input,textarea{font:inherit}
    При наведенні картка «загорається» — рамка, підсвітка й тепліший низ. */
 .product__item{
   position:relative;overflow:hidden;isolation:isolate;
-  aspect-ratio:5/4;
+  aspect-ratio:4/3;
   border:1px solid var(--line);border-radius:var(--r-card);
   background:var(--steel-deep);
   transition:transform .4s var(--ease),border-color .4s var(--ease),box-shadow .4s var(--ease);
@@ -488,12 +523,12 @@ input,textarea{font:inherit}
 .product__content{
   position:absolute;left:0;right:0;bottom:0;z-index:2;
   display:flex;align-items:flex-end;justify-content:space-between;gap:14px;
-  padding:26px 20px 18px;
-  background:linear-gradient(to top,rgba(9,12,16,.94) 0%,rgba(9,12,16,.78) 45%,rgba(9,12,16,0) 100%);
+  padding:38px 20px 18px;
+  background:linear-gradient(to top,rgba(7,10,13,.97) 0%,rgba(7,10,13,.9) 38%,rgba(7,10,13,.5) 72%,rgba(7,10,13,0) 100%);
   transition:background .45s var(--ease);
 }
 .product__item:hover .product__content{
-  background:linear-gradient(to top,rgba(60,18,2,.95) 0%,rgba(24,14,10,.78) 48%,rgba(9,12,16,0) 100%);
+  background:linear-gradient(to top,rgba(66,20,2,.97) 0%,rgba(38,16,8,.9) 40%,rgba(12,10,10,.5) 74%,rgba(9,12,16,0) 100%);
 }
 /* вогняна лінія повзе по низу картки */
 .product__content::before{
@@ -729,6 +764,20 @@ input,textarea{font:inherit}
 .footer-address__link:hover{color:var(--flame-hi)}
 .footer-address__link--contact-tel{font-size:clamp(20px,2.2vw,27px);font-weight:500;letter-spacing:.01em}
 
+/* Форма — окрема картка з власним заголовком: раніше вона зливалася
+   з рештою сторінки й було незрозуміло, що це саме заявка. */
+.contact__right{
+  background:var(--ink-raise);
+  border:1px solid var(--line-strong);
+  border-radius:var(--r-bar);
+  padding:clamp(24px,3vw,34px);
+}
+.contact__form-title{
+  font-size:clamp(19px,2vw,24px);font-weight:700;line-height:1.15;
+  margin:0 0 8px;color:var(--paper);
+}
+.contact__form-sub{font-size:14.5px;color:var(--muted);margin:0 0 24px}
+
 /* поля */
 .form__list{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .form__item{display:flex;flex-direction:column;gap:8px}
@@ -774,8 +823,8 @@ input,textarea{font:inherit}
   gap:clamp(24px,3vw,40px)}
 .footer__list{display:contents}
 .footer__title{
-  font-size:12px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
-  color:var(--faint);margin:0 0 18px;
+  font-size:12.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--paper);margin:0 0 18px;   /* світліші за пункти — з'являється ієрархія */
 }
 .menu__list--footer{display:flex;flex-direction:column;gap:11px}
 .menu__link{font-size:14.5px;color:var(--muted);transition:color .2s var(--ease)}
@@ -919,14 +968,14 @@ input,textarea{font:inherit}
   .about__left{flex-direction:row;align-items:center;justify-content:space-between;flex-wrap:wrap}
   .footer__wrapper .container{grid-template-columns:1fr}
   .quotes .container{flex-direction:column;align-items:flex-start}
-  .quotes__img{align-self:flex-end;margin-top:-40px}
+  .quotes__img{order:-1;align-self:flex-start;margin:0 0 22px}
 }
 
 @media (max-width:860px){
   :root{--header-h:68px}
   .hamburger{display:flex}
   .header__tel{display:none}
-  .header__tel--mobile{display:inline-flex;order:4;width:100%;justify-content:center}
+  .header__content .header__tel--mobile{display:inline-flex;order:4;width:100%;justify-content:center}
   /* Меню — окрема плаваюча картка рівно під панеллю, у її ширину.
      Прив'язуємось до самої панелі: backdrop-filter робить її системою
      координат для позиціонованих дітей, тож fixed тут не спрацював би. */
@@ -951,9 +1000,9 @@ input,textarea{font:inherit}
   .header__link{display:block;padding:16px 0;font-size:15px;letter-spacing:.08em}
   .header__link::after{display:none}
   .header__link--active{color:var(--flame-hi)}
-  .lang__button{order:2;margin-top:20px;align-self:flex-start}
-  .header__cta{order:3;display:inline-flex;width:100%;margin-top:16px}
-  .header__tel--mobile{margin-top:10px}
+  .header__content .lang__button{order:2;margin-top:20px;align-self:flex-start}
+  .header__content .header__cta{order:3;display:inline-flex;width:100%;margin-top:16px}
+  .header__content .header__tel--mobile{margin-top:10px}
   .partner__list{grid-template-columns:repeat(2,1fr)}
   .footer__right{grid-template-columns:1fr 1fr}
   .footer__subscribe{grid-column:1 / -1}
@@ -964,8 +1013,8 @@ input,textarea{font:inherit}
   /* Порядок на вузькому екрані: текст → кнопки на всю ширину →
      трикутник у правому нижньому куті. Підписи в ньому не вміщаються,
      тож лишаються самі іконки. */
-  .start .container{grid-template-columns:1fr;grid-template-areas:"copy" "cta" "rail"}
-  .start__navigation{justify-self:end;align-self:auto;margin-top:26px}
+  .start .container{grid-template-columns:1fr;grid-template-areas:"copy" "rail" "cta"}
+  .start__navigation{justify-self:end;align-self:auto;margin:6px 0 4px}
   .triad-nav__label{display:none}
   .triad-nav__list{width:clamp(160px,46vw,210px)}
   .triad-nav__ico{width:25px;height:25px}
@@ -987,7 +1036,13 @@ input,textarea{font:inherit}
   .footer__right{grid-template-columns:1fr}
   .primary__title{font-size:clamp(24px,7vw,34px)}
   .primary__wrapper{padding-bottom:56px}
-  .quotes__img{width:110px;margin-top:-16px}
+  .quotes__img{width:96px;margin:0 0 18px}
+}
+
+/* 9 логотипів у два стовпці лишають порожню клітинку — там ховаємо останній.
+   В один стовпець ховати не треба: порожнього місця не виникає. */
+@media (max-width:860px) and (min-width:481px){
+  .partner__item:nth-child(9){display:none}
 }
 
 @media (max-width:480px){
@@ -1017,7 +1072,7 @@ input,textarea{font:inherit}
   .primary__intro-label{
     display:block;padding-top:20px;border-top:1px solid var(--line-strong);
     font-size:12px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;
-    color:var(--muted);
+    color:var(--flame-hi);
   }
 
   /* панель → горизонтальна картка.
@@ -1030,13 +1085,30 @@ input,textarea{font:inherit}
     border-radius:var(--r-card);overflow:hidden;
   }
   .primary__item + .primary__item{box-shadow:none}
+  /* Заливка кожної картки взята з домінантного відтінку її фотографії:
+     оливкова техніка → оливкова картка, нафтова вишка → тепла, шестерні →
+     золотаво-коричнева. Фото зсунуте праворуч і менше обрізається. */
+  .primary__list .primary__item:nth-child(1){--card:22,36,28}
+  .primary__list .primary__item:nth-child(2){--card:46,29,20}
+  .primary__list .primary__item:nth-child(3){--card:42,35,20}
+  .primary__list .primary__item{background:rgb(var(--card,9 12 16))}
+  .primary__list .primary__bg{left:auto;right:0;width:58%}
+  .primary__list .primary__bg img{
+    object-position:center 42%;
+    filter:saturate(.9) brightness(.9);
+  }
   .primary__item::before{
-    background:linear-gradient(90deg,rgba(9,12,16,1) 0%,rgba(9,12,16,.96) 14%,rgba(9,12,16,.86) 44%,rgba(9,12,16,.5) 100%);
+    background:linear-gradient(90deg,
+      rgb(var(--card)) 0%,
+      rgba(var(--card),.98) 34%,
+      rgba(var(--card),.72) 62%,
+      rgba(var(--card),.34) 100%);
   }
   .primary__item:hover::before,.primary__item:active::before{
-    background:linear-gradient(90deg,rgba(58,18,3,1) 0%,rgba(48,18,5,.95) 14%,rgba(26,15,11,.85) 44%,rgba(9,12,16,.5) 100%);
+    background:linear-gradient(90deg,
+      rgb(66,22,4) 0%,rgba(58,22,6,.97) 34%,
+      rgba(var(--card),.7) 64%,rgba(var(--card),.34) 100%);
   }
-  .primary__list .primary__bg img{filter:saturate(.82) brightness(.78)}
   .primary__wrapper{align-items:center;padding:0}
   .primary__wrapper .container{
     width:100%;max-width:none;margin:0;padding:0 18px;

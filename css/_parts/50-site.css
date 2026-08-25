@@ -170,10 +170,11 @@ input,textarea{font:inherit}
 }
 .header__wrapper,.header__wrap{display:contents}
 .header .container{
-  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  display:flex;align-items:center;justify-content:flex-start;gap:14px;
   min-height:var(--header-h);
   position:relative;
-  padding-inline:var(--bar-pad);
+  /* праворуч відступ такий самий, як згори й знизу від кнопки телефону */
+  padding-left:var(--bar-pad);padding-right:12px;
   background:rgba(15,20,26,.66);
   -webkit-backdrop-filter:blur(20px) saturate(1.5);backdrop-filter:blur(20px) saturate(1.5);
   border:1px solid var(--line-strong);
@@ -184,7 +185,10 @@ input,textarea{font:inherit}
 .header__logo img{height:34px;width:auto}   /* без жорсткої ширини: інакше знак
    «плаває» всередині рамки й займає більше місця, ніж малює */
 
-.header__content{display:flex;align-items:center;gap:clamp(18px,2.5vw,34px)}
+.header__content{
+  flex:1;display:flex;align-items:center;justify-content:space-between;
+  gap:clamp(18px,2.5vw,34px);
+}
 .header__navigation{display:flex}
 .header__list{display:flex;align-items:center;gap:clamp(16px,2vw,30px)}
 .header__link{
@@ -225,7 +229,7 @@ input,textarea{font:inherit}
 .lang__list{display:flex;align-items:center;border:1px solid var(--line-strong);border-radius:var(--r-btn);overflow:hidden}
 .lang__link{
   display:inline-flex;align-items:center;justify-content:center;
-  min-width:42px;height:34px;padding:0 6px;
+  min-width:44px;height:42px;padding:0 8px;
   font-size:12px;font-weight:500;letter-spacing:.09em;
   color:var(--faint);transition:color .2s var(--ease),background-color .2s var(--ease);
 }
@@ -369,7 +373,7 @@ input,textarea{font:inherit}
 .triad-nav__item--military   .triad-nav__inner{left:25%;top:82%}
 .triad-nav__item--industrial .triad-nav__inner{left:75%;top:82%}
 
-.triad-nav__ico{width:clamp(22px,2.1vw,30px);height:clamp(22px,2.1vw,30px);flex:none}
+.triad-nav__ico{width:clamp(24px,2.9vw,40px);height:clamp(24px,2.9vw,40px);flex:none}
 .triad-nav__label{
   font-size:clamp(9.5px,.8vw,11.5px);font-weight:500;
   letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;
@@ -384,9 +388,10 @@ input,textarea{font:inherit}
 }
 /* активна грань — помаранчеве матове скло, як кнопка «Детальніше» і меню */
 .is-active .triad-nav__link{
-  background:linear-gradient(150deg,rgba(255,126,2,.40),rgba(255,46,0,.26));
+  background:linear-gradient(150deg,rgba(255,126,2,.52),rgba(255,46,0,.34));
   color:#fff;
-  filter:drop-shadow(0 12px 28px rgba(255,80,0,.26));
+  filter:drop-shadow(0 0 18px rgba(255,110,20,.38))
+         drop-shadow(0 12px 28px rgba(255,80,0,.30));
 }
 .is-active .triad-nav__link:hover,.is-active .triad-nav__link:focus-visible{
   background:linear-gradient(150deg,rgba(255,126,2,.54),rgba(255,46,0,.38));
@@ -1075,7 +1080,7 @@ input,textarea{font:inherit}
   .start__text{font-size:14.5px}
   .triad-nav__label{display:none}
 
-  .triad-nav__ico{width:22px;height:22px}
+  .triad-nav__ico{width:23px;height:23px}
   .start__buttons{width:100%;flex-direction:column}
   .start__buttons > *,
   .quotes__btn,.products__btn,.product__more,.primary__link,.form__btn{width:100%}

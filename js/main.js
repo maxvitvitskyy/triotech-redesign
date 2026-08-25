@@ -147,41 +147,11 @@
     //         }
     //     }
     // });
-    let widthScreen = document.documentElement.clientWidth;
-    if (document.documentElement.clientWidth >= 1200) {
-        let swiperPrimary = new Swiper(".primary__swiper", {
-            slidesPerView: "auto",
-
-            breakpoints: {
-                320: {
-                },
-
-            },
-
-        });
-
-        let swiperPrimaryEN = new Swiper(".primary__swiper--en", {
-            slidesPerView: "auto",
-            // breakpoints: {
-            //     320: {
-            //         slidesPerView: "auto",
-            //     },
-            //
-            // },
-            // on: {
-            //     resize() {
-            //         if (window.innerWidth <= 1200) {
-            //             this.enable();
-            //         } else if (window.innerWidth > 1200) {
-            //             this.slideTo(0);
-            //             this.disable();
-            //         }
-            //     },
-            // },
-
-        });
-
-    }
+    /* Swiper на стартовому екрані вимкнено.
+       Три панелі й так стоять поруч через flex, а сам Swiper вмикав
+       перехоплення вказівника (touchStartPreventDefault + preventClicks):
+       найменший рух миші між натисканням і відпусканням він вважав свайпом
+       і скасовував клік — кнопка «Перейти» спрацьовувала лише з другого разу. */
 
     // if (widthScreen <= 1280){
 

@@ -634,7 +634,8 @@ input,textarea{font:inherit}
   box-shadow:0 18px 44px -28px rgba(0,0,0,.9);
 }
 .header__logo{display:flex;align-items:center;flex:none;z-index:2}
-.header__logo img{height:34px;width:auto}
+.header__logo img{height:34px;width:auto}   /* без жорсткої ширини: інакше знак
+   «плаває» всередині рамки й займає більше місця, ніж малює */
 
 .header__content{display:flex;align-items:center;gap:clamp(18px,2.5vw,34px)}
 .header__navigation{display:flex}
@@ -685,7 +686,10 @@ input,textarea{font:inherit}
 .lang__link--on{background-image:var(--flame-grad);color:#fff}
 .lang__link--on:hover{color:#fff}
 
-.header__cta{min-height:44px;padding:0 18px;gap:9px;font-size:13.5px;letter-spacing:.06em;text-transform:uppercase}
+/* Кнопка живе лише в мобільній шухляді: у десктопній панелі її місце зайняв
+   телефон, інакше дві дії поспіль не вміщались. */
+.header__cta{display:none;min-height:48px;padding:0 18px;gap:9px;
+  font-size:13.5px;letter-spacing:.06em;text-transform:uppercase;justify-content:center}
 .header__cta .btn__arrow{width:17px!important;height:14px!important}
 
 /* бургер */
@@ -833,9 +837,26 @@ input,textarea{font:inherit}
   box-shadow:0 8px 20px -14px rgba(255,94,1,.7);
   transition:transform .25s var(--ease),box-shadow .25s var(--ease);
 }
-.primary__link:hover{transform:translateY(-2px);box-shadow:0 14px 28px -14px rgba(255,94,1,.8)}
+.primary__link:hover{transform:translateY(-2px);box-shadow:0 12px 26px -12px rgba(255,94,1,.9)}
 .primary__icon{width:18px;height:16px;transition:transform .25s var(--ease)}
 .primary__link:hover .primary__icon{transform:translateX(4px)}
+
+/* Клікабельна вся панель, не лише кнопка.
+   Це окремий шар-посилання, а не ::after у кнопки: будь-який transform чи
+   filter на кнопці зробив би її системою координат, і клікабельна площина
+   стиснулась би до розміру кнопки. Окремий елемент від таких ефектів
+   не залежить. Для читачів екрана шар прихований — вони бачать саму кнопку. */
+.primary__item{cursor:pointer}
+.primary__cover{position:absolute;inset:0;z-index:3;display:block}
+.primary__item:hover .primary__link{
+  transform:translateY(-2px);
+  box-shadow:0 12px 26px -12px rgba(255,94,1,.9);
+}
+.primary__item:hover .primary__icon{transform:translateX(4px)}
+/* Надпис «Мастильні матеріали» веде на цю ж сторінку, тож не перехоплюємо ним
+   клік — інакше в одному кутку панель поводилась би інакше. */
+.primary__text{pointer-events:none}
+.primary__link:focus-visible{outline:2px solid #fff;outline-offset:3px}
 
 /* В оригіналі на вузьких екранах перша панель перетворювалась на список
    із трьох посилань, а решта панелей ховались. Тут інший підхід: панелі
@@ -889,6 +910,12 @@ input,textarea{font:inherit}
 .product__foot{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-top:clamp(34px,4vw,52px)}
 .product.with-extra .product__more,
 .products.with-extra .product__more{display:none}
+
+/* Кнопка заявки під товарами з'являється після того, як розкрито всі позиції —
+   так було в оригіналі, лишаємо цю логіку, але описуємо її тут явно. */
+.products__btn{display:none}
+.product.with-extra .products__btn,
+.products.with-extra .products__btn{display:inline-flex}
 
 @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 
@@ -949,8 +976,12 @@ input,textarea{font:inherit}
 .about__left{display:flex;flex-direction:column;gap:34px}
 .about__left .btn.no-click{margin-bottom:0}
 .about__title{margin:0 0 22px}
-.about__title img{height:clamp(30px,3.4vw,44px);width:auto;
-  filter:invert(1);opacity:.94}   /* знак намальовано чорним — на темному інвертуємо */
+.about__title img{
+  height:clamp(30px,3.4vw,44px);width:auto;   /* ширина рахується з пропорції:
+     раніше стояло жорстке width:240px, і напис «висів» посеред рамки — звідси
+     зайвий відступ зліва */
+  filter:invert(1);opacity:.94;               /* знак намальовано чорним */
+}
 .about__wrap{display:flex;flex-direction:column;gap:18px;max-width:62ch}
 .about__text{font-size:clamp(15px,1.3vw,17.5px);color:rgba(239,237,237,.78)}
 .about__text:first-child{font-size:clamp(17px,1.7vw,22px);font-weight:400;color:var(--paper);line-height:1.45}
@@ -1248,6 +1279,14 @@ input,textarea{font:inherit}
 }
 /* але в мобільному меню місця вдосталь — номер показуємо повністю */
 .header__tel--mobile .header__tel-num{display:inline}
+/* у шухляді дві дії поспіль, тож головна — заявка, а телефон спокійний */
+.header__tel--mobile{
+  background-image:none;background-color:rgba(239,237,237,.05);
+  border-color:var(--line-strong);color:var(--paper);box-shadow:none;
+}
+.header__tel--mobile svg{color:var(--flame-hi)}
+.header__tel--mobile:hover{transform:none;border-color:var(--flame-hi);
+  background-color:rgba(255,126,2,.10);box-shadow:none}
 
 @media (max-width:1200px){
   .why__list{grid-template-columns:repeat(2,1fr)}
@@ -1274,7 +1313,7 @@ input,textarea{font:inherit}
   :root{--header-h:68px}
   .hamburger{display:flex}
   .header__tel{display:none}
-  .header__tel--mobile{display:inline-flex;order:3;width:100%;justify-content:center}
+  .header__tel--mobile{display:inline-flex;order:4;width:100%;justify-content:center}
   /* Меню — окрема плаваюча картка рівно під панеллю, у її ширину.
      Прив'язуємось до самої панелі: backdrop-filter робить її системою
      координат для позиціонованих дітей, тож fixed тут не спрацював би. */
@@ -1299,7 +1338,9 @@ input,textarea{font:inherit}
   .header__link{display:block;padding:16px 0;font-size:15px;letter-spacing:.08em}
   .header__link::after{display:none}
   .header__link--active{color:var(--flame-hi)}
-  .lang__button{order:2;margin-top:18px;align-self:flex-start}
+  .lang__button{order:2;margin-top:20px;align-self:flex-start}
+  .header__cta{order:3;display:inline-flex;width:100%;margin-top:16px}
+  .header__tel--mobile{margin-top:10px}
   .partner__list{grid-template-columns:repeat(2,1fr)}
   .footer__right{grid-template-columns:1fr 1fr}
   .footer__subscribe{grid-column:1 / -1}
@@ -2043,98 +2084,3 @@ button.swiper-pagination-bullet {
         backface-visibility: hidden;
     }
 
-.header__logo img {
-    width: 175px;
-}
-
-.btn.no-click {
-    cursor: default;
-}
-
-.extra {
-    display: none;
-}
-
-.products__btn {
-    display: none;
-}
-
-.with-extra .extra {
-    display: list-item;
-    -webkit-animation: fadein 2s; /* Safari, Chrome and Opera > 12.1 */
-    -moz-animation: fadein 2s; /* Firefox < 16 */
-    -ms-animation: fadein 2s; /* Internet Explorer */
-    -o-animation: fadein 2s; /* Opera < 12.1 */
-    animation: fadein 2s;
-}
-
-.with-extra .product__more {
-    display: none;
-}
-
-.with-extra .products__btn {
-    display: flex;
-}
-
-@keyframes fadein {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-/* Firefox < 16 */
-@-moz-keyframes fadein {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-/* Safari, Chrome and Opera > 12.1 */
-@-webkit-keyframes fadein {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-/* Internet Explorer */
-@-ms-keyframes fadein {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-/* Opera < 12.1 */
-@-o-keyframes fadein {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-@media (max-width: 768px) {
-    .start__btn {
-        max-width: 295px;
-    }
-}
-
-.about__title img {
-    width: 240px;

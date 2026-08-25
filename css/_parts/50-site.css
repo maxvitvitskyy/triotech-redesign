@@ -440,11 +440,15 @@ input,textarea{font:inherit}
    з плиткою внизу: назва зліва, стрілка справа. Стрілка загорається,
    коли наводиш на будь-яке місце картки.
    ============================================================================ */
+/* Висоту вирізу треба саме анімувати (від неї залежить clip-path фігури),
+   а незареєстровану custom property браузер міняє стрибком. */
+@property --notch-extra{syntax:"<length>";inherits:true;initial-value:0px}
+
 /* Головна — це екран вибору галузі, тож він займає рівно одну висоту вікна:
    меню, під ним текст, а картки розтягуються на весь залишок висоти. */
 .primary{
   display:flex;flex-direction:column;min-height:100svh;
-  padding:calc(var(--header-top) + var(--header-h) + clamp(40px,5vw,72px)) 0 0;
+  padding:calc(var(--header-top) + var(--header-h) + clamp(40px,5vw,72px)) 0 clamp(18px,2.2vh,32px);
 }
 /* Картки вирівняні по тій самій сітці, що й меню та решта секцій */
 .primary__swiper{width:min(100% - (var(--gutter) * 2),var(--maxw));margin-inline:auto;overflow:visible;flex:1 1 auto;min-height:0;display:grid;grid-template-rows:minmax(0,1fr)}
@@ -477,17 +481,27 @@ input,textarea{font:inherit}
 .primary .primary__item{
   --r:20px;                                  /* зовнішні кути */
   --ri:clamp(15px,1.3vw,22px);               /* внутрішній кут стику */
-  --notch:clamp(74px,8.4vh,104px);           /* висота вирізу = висота виступу */
-  --tab:var(--notch);                        /* виступ майже квадратний */
+  --notch-base:clamp(74px,8.4vh,104px);      /* висота вирізу у спокої */
+  --notch-extra:0px;                         /* наскільки виріз росте при наведенні */
+  --notch:calc(var(--notch-base) + var(--notch-extra));
+  --tab:var(--notch-base);                   /* ширина виступу не змінюється */
   --gap-in:clamp(9px,.8vw,13px);             /* поле навколо стрілки */
-  --dot:calc(var(--notch) - var(--gap-in) * 2);
+  --dot:calc(var(--notch-base) - var(--gap-in) * 2);
   position:relative;flex:none;width:auto;height:auto;min-height:0;
   border-radius:0;overflow:visible;isolation:isolate;
   background:none;cursor:pointer;
-  transition:transform .5s var(--ease-out),filter .5s var(--ease-out);
+  transition:transform .5s var(--ease-out),filter .5s var(--ease-out),
+             --notch-extra .55s var(--ease-out);
 }
 .primary__item + .primary__item{box-shadow:none}
-.primary__item:hover{transform:translateY(-6px);filter:drop-shadow(0 22px 34px rgba(0,0,0,.6))}
+.primary__item:hover{
+  transform:translateY(-6px);
+  /* drop-shadow бере альфу вже зібраної фігури, тож ореол іде точно по її
+     контуру — разом із вирізом і скругленим кутом стику */
+  filter:drop-shadow(0 22px 34px rgba(0,0,0,.6))
+         drop-shadow(0 0 16px rgba(255,94,1,.42));
+  --notch-extra:clamp(52px,6vh,74px);
+}
 
 .primary__slab,.primary__bg{
   position:absolute;inset:0;z-index:0;
@@ -529,9 +543,32 @@ input,textarea{font:inherit}
 /* Одне спільне затемнення низу для всіх трьох шарів: вони однакового розміру,
    тож градієнт лягає рівно й переходу між панеллю та виступом не видно. */
 .primary__slab::after,.primary__bg::after{
-  content:"";position:absolute;inset:0;
+  content:"";position:absolute;inset:0;z-index:1;
   background:linear-gradient(to top,
     rgba(6,9,13,.58) 0%,rgba(6,9,13,.16) 20%,rgba(6,9,13,0) 46%);
+}
+/* Помаранчеве світіння по внутрішньому обводу. Градієнти прив’язані до
+   рамки картки, а не до окремого шару, тож у всіх трьох шарах лягають
+   однаково й стиків не видно. Легкий дрейф дає ледь помітне мерехтіння. */
+.primary__slab::before,.primary__bg::before{
+  content:"";position:absolute;inset:0;z-index:2;opacity:0;pointer-events:none;
+  mix-blend-mode:screen;
+  background:
+    radial-gradient(40% 24% at 50% 103%,rgba(255,94,1,.85),rgba(255,94,1,0) 74%),
+    radial-gradient(22% 30% at -3% 72%,rgba(255,126,2,.6),rgba(255,126,2,0) 76%),
+    radial-gradient(22% 30% at 103% 44%,rgba(255,94,1,.6),rgba(255,94,1,0) 76%),
+    radial-gradient(26% 32% at 103% 94%,rgba(255,140,20,.55),rgba(255,140,20,0) 76%),
+    radial-gradient(34% 18% at 44% -3%,rgba(255,64,0,.42),rgba(255,64,0,0) 76%);
+  transition:opacity .5s var(--ease);
+}
+.primary__item:hover .primary__slab::before,
+.primary__item:hover .primary__bg::before{
+  opacity:.78;animation:cardMesh 7s ease-in-out infinite alternate;
+}
+@keyframes cardMesh{
+  0%  {transform:translate3d(0,0,0) scale(1)}
+  50% {transform:translate3d(2%,-1.6%,0) scale(1.05)}
+  100%{transform:translate3d(-1.6%,2%,0) scale(1.03)}
 }
 .primary__item::before{display:none}
 
@@ -550,11 +587,25 @@ input,textarea{font:inherit}
   background:none;border:none;border-radius:0;
   -webkit-backdrop-filter:none;backdrop-filter:none;
 }
+.primary__copy{display:flex;flex-direction:column;min-width:0}
 .primary__title{
   font-weight:700;font-size:clamp(19px,1.95vw,29px);line-height:1.1;
   letter-spacing:.005em;text-transform:uppercase;margin:0;
 }
 .primary__title span{display:block;font-weight:300;color:rgba(239,237,237,.62);font-size:.82em;margin-top:2px}
+/* опис галузі з внутрішньої сторінки: при наведенні виріз стає вищим,
+   назва підіймається, а під нею розкривається текст */
+.primary__reveal{display:grid;grid-template-rows:0fr;transition:grid-template-rows .55s var(--ease-out)}
+.primary__item:hover .primary__reveal{grid-template-rows:1fr}
+.primary__desc{
+  overflow:hidden;min-height:0;margin:0;
+  padding-top:10px;
+  font-size:clamp(12.5px,.98vw,14.5px);line-height:1.42;
+  color:rgba(239,237,237,.7);
+  opacity:0;transform:translateY(6px);
+  transition:opacity .4s .1s var(--ease),transform .45s .1s var(--ease-out);
+}
+.primary__item:hover .primary__desc{opacity:1;transform:none}
 
 .primary__link{
   position:absolute;top:50%;right:var(--gap-in);
@@ -1276,7 +1327,9 @@ input,textarea{font:inherit}
     z-index:0;inset:0 0 0 auto;width:64%;
     background-color:transparent;border-radius:0;overflow:hidden;
   }
-  .primary__bg::after{display:none}
+  .primary__bg::after,.primary__bg::before{display:none}
+  .primary__reveal{display:none}
+  .primary .primary__item{--notch-extra:0px}
   .primary__bg picture{display:block;width:100%;height:100%}
   .primary__bg img{
     object-position:center;filter:saturate(.98) brightness(.98);
@@ -1319,6 +1372,8 @@ input,textarea{font:inherit}
 }
 
 @media (prefers-reduced-motion:reduce){
+  .primary__slab::before,.primary__bg::before{animation:none}
+  .primary .primary__item,.primary__reveal,.primary__desc{transition-duration:.01ms}
   html{scroll-behavior:auto}
   ::view-transition-old(root),::view-transition-new(root){animation:none}
   .main{animation:none}

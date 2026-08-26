@@ -967,10 +967,11 @@ input,textarea{font:inherit}
   font-size:clamp(15px,1.35vw,18px);color:rgba(239,237,237,.72);
   max-width:46ch;margin:0 0 26px;
 }
-/* Розділювач лежить рівно на основі трикутника й тягнеться на всю ширину —
-   знак ніби стоїть на ньому. Підпис іде вже під лінією. */
+/* Розділювач лежить рівно на рівні основи трикутника, але тягнеться лише
+   під текстом — до кінця другої колонки, не доходячи до знака.
+   Підпис іде вже під лінією. */
 .primary__intro-label{
-  grid-column:1 / -1;
+  grid-column:1 / span 2;
   display:block;padding-top:18px;border-top:1px solid var(--line-strong);
   font-size:12px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;
   color:var(--flame-hi);

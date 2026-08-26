@@ -968,7 +968,14 @@ input,textarea{font:inherit}
     var(--ink) 0%, rgba(15,20,26,0) 22%,
     rgba(15,20,26,0) 78%, var(--ink) 100%);
 }
-.quotes .container{display:flex;align-items:center;justify-content:space-between;gap:clamp(32px,5vw,64px)}
+/* Логотип має тримати блок разом: його верх — на рівні першого рядка
+   заголовка, низ — на рівні кнопки. Тому він виведений з потоку: інакше
+   власна висота картинки задавала б висоту рядка, а не навпаки. Місце під
+   нього заброньовано відступом контейнера. */
+.quotes .container{
+  position:relative;display:flex;align-items:center;justify-content:space-between;
+  gap:clamp(32px,5vw,64px);padding-right:clamp(200px,26%,340px);
+}
 .quotes__wrapper{max-width:62ch}
 .quotes__title{
   font-weight:700;font-size:clamp(26px,3.4vw,44px);line-height:1.12;
@@ -977,8 +984,11 @@ input,textarea{font:inherit}
 .quotes__title span{
   background-image:var(--flame-grad);-webkit-background-clip:text;background-clip:text;color:transparent;
 }
-.quotes__img{flex:none;width:clamp(120px,15vw,190px);opacity:.95}
-.quotes__img img{width:100%;height:auto}
+.quotes__img{
+  position:absolute;top:0;bottom:0;right:0;width:auto;
+  display:flex;align-items:center;justify-content:flex-end;opacity:.95;
+}
+.quotes__img img{height:100%;width:auto;max-width:100%;object-fit:contain;display:block}
 
 /* ============================================================================
    КОНТАКТИ + ФОРМА
@@ -1244,8 +1254,12 @@ input,textarea{font:inherit}
   .about .container{grid-template-columns:1fr}
   .about__left{flex-direction:row;align-items:center;justify-content:space-between;flex-wrap:wrap}
   .footer__wrapper .container{grid-template-columns:1fr}
-  .quotes .container{flex-direction:column;align-items:flex-start}
-  .quotes__img{order:-1;align-self:flex-start;margin:0 0 22px}
+  .quotes .container{position:static;flex-direction:column;align-items:flex-start;padding-right:0}
+  .quotes__img{
+    position:static;order:-1;align-self:flex-start;margin:0 0 22px;
+    display:block;width:clamp(120px,15vw,190px);
+  }
+  .quotes__img img{width:100%;height:auto}
 }
 
 @media (max-width:860px){

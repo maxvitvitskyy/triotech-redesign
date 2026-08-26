@@ -1565,6 +1565,19 @@ input,textarea{font:inherit}
 .footer__protected{display:block;text-align:center;font-size:13px;color:var(--faint)}
 
 /* ============================================================================
+   ТЛО ПІД ВІДКРИТИМ МОБІЛЬНИМ МЕНЮ
+   Сайт за шухлядою розмивається. Шар лежить окремо від шапки: у неї власний
+   backdrop-filter, а він робить її системою координат і сам би потрапив під
+   розмиття. Показується лише там, де меню справді стає шухлядою (860 px).
+   ============================================================================ */
+.nav-scrim{
+  position:fixed;inset:0;z-index:50;
+  background:rgba(10,13,18,.38);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .32s var(--ease),visibility .32s var(--ease);
+}
+
+/* ============================================================================
    МОДАЛКА
    ============================================================================ */
 .overlay{
@@ -1743,6 +1756,13 @@ input,textarea{font:inherit}
     max-height:min(74vh,540px);opacity:1;
     padding:12px clamp(16px,2vw,22px) 14px;overflow-y:auto;
   }
+  /* Розмиття вмикаємо лише там, де меню стає шухлядою: на десктопі цей шар
+     не має нести backdrop-filter навіть прихованим. */
+  .nav-scrim{
+    -webkit-backdrop-filter:blur(14px) saturate(1.15);
+    backdrop-filter:blur(14px) saturate(1.15);
+  }
+  .header--open + .nav-scrim{opacity:1;visibility:visible;pointer-events:auto}
   .header__navigation{width:100%}
   .header__list{flex-direction:column;align-items:stretch;gap:0;width:100%}
   .header__item:not(:last-child){border-bottom:1px solid var(--line)}

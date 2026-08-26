@@ -71,6 +71,19 @@
       setTimeout(place, 300);   // після того, як шрифти змінять розкладку
     })();
 
+    /* --- тап по розмитому тлу закриває мобільне меню --- */
+    (function () {
+      var scrim = document.querySelector(".nav-scrim");
+      var header = document.querySelector(".header");
+      if (!scrim || !header) return;
+      scrim.addEventListener("click", function () {
+        header.classList.remove("header--open");
+        document.documentElement.classList.remove("block");
+        var burger = document.querySelector(".hamburger");
+        if (burger) burger.classList.remove("hamburger--active");
+      });
+    })();
+
     /* --- знак-трикутник на головній ---
        Жодна грань не активна за замовчуванням. Наводиш на грань або на
        відповідну картку внизу — саме її сектор і засвічується. Класи ті
